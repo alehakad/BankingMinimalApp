@@ -9,6 +9,6 @@ const router = express.Router()
 
 const swaggerDocument = YAML.load(path.join(process.cwd(), 'src/docs/openapi.yaml'));
 
-router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+router.use('/', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 export default router;
