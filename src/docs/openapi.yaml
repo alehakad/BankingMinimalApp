@@ -1,0 +1,227 @@
+openapi: 3.0.0
+servers:
+  - url: 'https://bankapp.com/v1'
+    description: Production server
+  - url: 'http://localhost:3000/v1'
+    description: Testing local server
+info:
+  version: 1.0.0
+  title: Web Banking Application API
+  description: The API for the web banking application
+paths:
+  /register:
+    get:
+      summary: Serves register page
+      tags:
+        - auth
+      responses:
+        '200':
+          description: Register page returned successfully
+          content:
+            text/html:
+              schema:
+                type: string
+                example: <html>...</html>
+    post:
+      summary: Sending sign-up form to register
+      tags:
+        - auth
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUser'
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Bad Request – Missing or malformed registration data
+        '409':
+          description: Conflict – Email already in use
+  /login:
+    get:
+      summary: Serves login page
+      tags:
+        - auth
+      responses:
+        '200':
+          description: Login page returned successfully
+          content:
+            text/html:
+              schema:
+                type: string
+                example: <html>...</html>
+    post:
+      summary: Logging in into the bank app
+      tags:
+        - auth
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginUser'
+      responses:
+        '200':
+          description: User logged in successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Bad Request – Missing or malformed login credentials
+        '401':
+          description: Unauthorized – Incorrect email or password or expired/invalid token
+  /user/home:
+    get:
+      summary: Serves dashboard page
+      tags:
+        - user
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Dashboard page returned successfully
+          content:
+            text/html:
+              schema:
+                type: string
+                example: <html>...</html>
+  '/user/{userId}/transactions':
+    put:
+      summary: Update the list of transactions for a user
+      tags:
+        - user
+      description: Adds or removes transactions for a user. The user is identified by `userId` in the URL.
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: Unique identifier of the user to update
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                transactions:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      transactionId:
+                        type: string
+                        description: Unique identifier for the transaction
+                      amount:
+                        type: number
+                        description: Amount involved in the transaction
+                  description: List of transactions to be associated with the user
+      responses:
+        '200':
+          description: Successfully updated the user's transactions
+        '400':
+          description: Invalid input or malformed request body
+        '404':
+          description: User not found
+    get:
+      summary: Retrieve the list of transactions for a user
+      tags:
+        - user
+      description: Returns all transactions associated with the user identified by `userId`.
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          description: Unique identifier of the user to fetch transactions for
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved the user's transactions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  transactions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        transactionId:
+                          type: string
+                          description: Unique identifier for the transaction
+                        amount:
+                          type: number
+                          description: Amount involved in the transaction
+                description: A list of transactions for the user
+        '404':
+          description: User not found
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Transaction:
+      type: object
+      properties:
+        sender:
+          $ref: '#/components/schemas/User'
+        receiver:
+          $ref: '#/components/schemas/User'
+    User:
+      type: object
+      properties:
+        email:
+          type: string
+        id:
+          type: integer
+        phone:
+          type: string
+        amount:
+          type: integer
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Transaction'
+    NewUser:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+        phone:
+          type: string
+    LoginUser:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    AuthResponse:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        token:
+          type: string
+          description: JWT for authenticated requests
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
