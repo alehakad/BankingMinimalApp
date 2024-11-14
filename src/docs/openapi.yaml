@@ -96,6 +96,46 @@ paths:
               schema:
                 type: string
                 example: <html>...</html>
+  
+  /verify-passcode:
+    post:
+      summary: Verifies the passcode entered by the user
+      tags:
+        - user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                phone:
+                  type: string
+                  description: The phone number of the user (must be registered)
+                passcode:
+                  type: string
+                  description: The passcode entered by the user (received via SMS)
+      responses:
+        '200':
+          description: Passcode verified successfully, registration completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          description: Bad Request – Invalid passcode or phone number mismatch
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Invalid passcode or phone number mismatch
+        '500':
+          description: Internal server error – Error occurred during passcode verification
+
+      
   '/user/transactions':
     put:
       summary: Update the list of transactions for a user

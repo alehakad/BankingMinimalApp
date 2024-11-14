@@ -5,21 +5,28 @@ import jwtMiddleware from "../middleware/auth.js"
 
 const router = express.Router();
 
-
+// protect route
 router.use(jwtMiddleware);
 
-// list of users, should be in DB
-const users = [{username: "Alek", password: "123"}, {username: "Gio", password: "321"}, {username: "Lop", password: "456"}] 
-
 router.post('/home', (req, res) => {
-    const { username, password } = req.body;
-    // Authenticate user (dummy logic here)
-    const user = users.find(u => u.username === username && u.password === password);
-    if (!user) return res.status(401).send('Invalid credentials');
-  
-    const token = generateToken(user.id);
-    res.json({ token });
-  });
+    res.send("Welcome to dashboard");
+});
+
+
+router.get('/transactions', (req, res) => {
+    res.status(200).json({
+        "transactions": [
+            {
+                "transactionId": "string",
+                "amount": 0
+            }
+        ]
+    })
+})
+
+router.put('/transactions', (req, res) => {
+    // TODO: 
+})
 
 
 export default router;
