@@ -96,19 +96,12 @@ paths:
               schema:
                 type: string
                 example: <html>...</html>
-  '/user/{userId}/transactions':
+  '/user/transactions':
     put:
       summary: Update the list of transactions for a user
       tags:
         - user
-      description: Adds or removes transactions for a user. The user is identified by `userId` in the URL.
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          description: Unique identifier of the user to update
-          schema:
-            type: string
+      description: Adds or removes transactions for a user
       requestBody:
         required: true
         content:
@@ -139,16 +132,9 @@ paths:
       summary: Retrieve the list of transactions for a user
       tags:
         - user
-      description: Returns all transactions associated with the user identified by `userId`.
+      description: Returns all transactions associated with the user
       security:
         - BearerAuth: []
-      parameters:
-        - name: userId
-          in: path
-          required: true
-          description: Unique identifier of the user to fetch transactions for
-          schema:
-            type: string
       responses:
         '200':
           description: Successfully retrieved the user's transactions
