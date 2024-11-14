@@ -30,7 +30,7 @@ router.post('/', checkSchema(userLoginSchema), (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-    // Authenticate user (dummy logic here)
+    // authenticate user
     const user = users.find(u => u.email === email && u.password === password);
     if (!user) return res.status(401).send('Invalid credentials');
 

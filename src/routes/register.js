@@ -80,13 +80,13 @@ router.post('/', checkSchema(userRegisterSchema), (req, res) => {
         return res.status(400).json({ errors: errors.array() });
     }
 
-    const { phone } = req.body;
+    const { email } = req.body;
 
-    // generate and send otp
+    // generate and send otp to email
     const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false, lowerCaseAlphabets: false });
     console.log("sending otp ...")
 
-    usersOtp.set(phone, {otp});
+    usersOtp.set(phone, { otp });
 
     res.status(200);
 })
@@ -100,13 +100,13 @@ router.post('/verify-passcode', checkSchema(userOtpSchema), (req, res) => {
         return res.status(400).json({ errors: errors.array() });
     }
 
-    const { phone, otp } = req.body;
+    const { email, otp } = req.body;
 
-    const user = users.find(phone => u.phone);
+    const user = users.find(email => u.email);
     if (!user) return res.status(401).send('Invalid credentials');
 
     // check otp
-    if (otp != usersOtp.get(phone)) {
+    if (otp != usersOtp.get(email)) {
         return res.status(401).send('Wrong otp');
     }
 

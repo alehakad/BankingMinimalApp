@@ -8,6 +8,7 @@ info:
   version: 1.0.0
   title: Web Banking Application API
   description: The API for the web banking application
+
 paths:
   /register:
     get:
@@ -21,7 +22,7 @@ paths:
             text/html:
               schema:
                 type: string
-                example: <html>...</html>
+                example: "<html>...</html>"
     post:
       summary: Sending sign-up form to register
       tags:
@@ -45,6 +46,7 @@ paths:
           description: Bad Request – Missing or malformed registration data
         '409':
           description: Conflict – Email already in use
+
   /login:
     get:
       summary: Serves login page
@@ -57,9 +59,9 @@ paths:
             text/html:
               schema:
                 type: string
-                example: <html>...</html>
+                example: "<html>...</html>"
     post:
-      summary: Logging in into the bank app
+      summary: Logging into the bank app
       tags:
         - auth
       security:
@@ -81,6 +83,7 @@ paths:
           description: Bad Request – Missing or malformed login credentials
         '401':
           description: Unauthorized – Incorrect email or password or expired/invalid token
+
   /user/home:
     get:
       summary: Serves dashboard page
@@ -95,8 +98,8 @@ paths:
             text/html:
               schema:
                 type: string
-                example: <html>...</html>
-  
+                example: "<html>...</html>"
+
   /verify-passcode:
     post:
       summary: Verifies the passcode entered by the user
@@ -131,17 +134,16 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: Invalid passcode or phone number mismatch
+                    example: "Invalid passcode or phone number mismatch"
         '500':
           description: Internal server error – Error occurred during passcode verification
 
-      
-  '/user/transactions':
+  /user/transactions:
     put:
       summary: Update the list of transactions for a user
       tags:
         - user
-      description: Adds or removes transactions for a user
+      description: Adds a new transaction for a user
       requestBody:
         required: true
         content:
@@ -149,18 +151,9 @@ paths:
             schema:
               type: object
               properties:
-                transactions:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      transactionId:
-                        type: string
-                        description: Unique identifier for the transaction
-                      amount:
-                        type: number
-                        description: Amount involved in the transaction
-                  description: List of transactions to be associated with the user
+                transaction:
+                  $ref: '#/components/schemas/Transaction'
+                  description: New transaction to execute
       responses:
         '200':
           description: Successfully updated the user's transactions
@@ -168,6 +161,7 @@ paths:
           description: Invalid input or malformed request body
         '404':
           description: User not found
+
     get:
       summary: Retrieve the list of transactions for a user
       tags:
@@ -186,23 +180,19 @@ paths:
                   transactions:
                     type: array
                     items:
-                      type: object
-                      properties:
-                        transactionId:
-                          type: string
-                          description: Unique identifier for the transaction
-                        amount:
-                          type: number
-                          description: Amount involved in the transaction
+                      $ref: '#/components/schemas/Transaction'
+                    description: List of transactions to be associated with the user
                 description: A list of transactions for the user
         '404':
           description: User not found
+
 components:
   securitySchemes:
     BearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
+
   schemas:
     Transaction:
       type: object
@@ -211,6 +201,10 @@ components:
           $ref: '#/components/schemas/User'
         receiver:
           $ref: '#/components/schemas/User'
+        amount: 
+          type: integer
+          description: Amount involved in the transaction
+
     User:
       type: object
       properties:
@@ -226,6 +220,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Transaction'
+
     NewUser:
       type: object
       properties:
@@ -235,6 +230,7 @@ components:
           type: string
         phone:
           type: string
+
     LoginUser:
       type: object
       properties:
@@ -242,6 +238,7 @@ components:
           type: string
         password:
           type: string
+
     AuthResponse:
       type: object
       properties:
@@ -250,4 +247,4 @@ components:
         token:
           type: string
           description: JWT for authenticated requests
-          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."

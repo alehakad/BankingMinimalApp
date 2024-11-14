@@ -4,7 +4,7 @@ import YAML from 'yamljs';
 import path from 'path';
 
 
-const router = express.Router()
+const router = express.Router();
 
 
 const swaggerDocument = YAML.load(path.join(process.cwd(), 'src/docs/openapi.yaml'));
