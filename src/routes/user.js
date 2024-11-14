@@ -1,5 +1,4 @@
 import express from 'express';
-import generateToken from '../utils/token.js';
 import jwtMiddleware from "../middleware/auth.js"
 
 
@@ -25,7 +24,7 @@ router.get('/transactions', (req, res) => {
 })
 
 router.put('/transactions', (req, res) => {
-    // TODO: 
+    // TODO: add transaction
 })
 
 
