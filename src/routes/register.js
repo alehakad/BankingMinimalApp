@@ -82,7 +82,7 @@ router.post('/', checkSchema(userRegisterSchema), async (req, res) => {
     const { email, phone, password } = req.body;
     const existingUser = await User.findByEmailOrPhone(email, phone);
     if (existingUser) {
-        return res.status(400).json({ message: 'User already exists' });
+        return res.status(400).json({ error: 'User already exists' });
     }
 
     // create user with random amount
@@ -112,19 +112,18 @@ router.post('/verify-passcode', checkSchema(userOtpSchema), async (req, res) => 
     const { email, passcode } = req.body;
 
     const currentUser = await User.findByEmailOrPhone(email);
-    if (!currentUser) return res.status(401).send('Invalid credentials');
+    if (!currentUser) return res.status(401).json({ error: 'Invalid credentials' });
 
     // check otp
     if (!passcode || passcode != usersOtp.get(email)) {
-        return res.status(401).send('Wrong otp');
+        return res.status(401).json({ error: 'Wrong otp' });
     }
 
     // change user verified flag
     currentUser.verified = true;
     await currentUser.save();
-    // generate token - signup completed
-    const token = generateToken(currentUser.email);
-    return res.status(200).json({ token });
+    // user will be redirected to login
+    res.status(200).json({ message: 'Account verified' });
 
 })
 

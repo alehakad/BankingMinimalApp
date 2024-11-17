@@ -29,14 +29,14 @@ router.post('/', checkSchema(userLoginSchema), async (req, res) => {
     }
     // authenticate user
     const existingUser = await User.findByEmailOrPhone(email);
-    if (!existingUser) return res.status(401).send('Invalid credentials');
+    if (!existingUser) return res.status(401).json({ error: 'Invalid credentials' });
 
     // check user verified
-    if (!existingUser.verified) return res.status(403).send('Account not verified');
+    if (!existingUser.verified) return res.status(403).json({ error: 'Account not verified' });
 
     const checkPassword = await existingUser.comparePassword(password);
     if (!checkPassword) {
-        return res.status(401).json({ message: 'Wrong password or email' });
+        return res.status(401).json({ error: 'Wrong password or email' });
     }
 
     const token = generateToken(existingUser.email);

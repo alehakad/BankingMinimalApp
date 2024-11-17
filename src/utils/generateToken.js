@@ -6,8 +6,8 @@ dotenv.config();
 
 const SECRET_KEY = process.env.SECRET_KEY;
 
-function generateToken(userId) {
-    return jwt.sign({ userId }, SECRET_KEY, { expiresIn: '5h' })
+function generateToken(userEmail) {
+    return jwt.sign(userEmail, SECRET_KEY, { expiresIn: '5h' })
 }
 
 export default generateToken;
