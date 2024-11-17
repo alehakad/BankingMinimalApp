@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
 
-const mongoURI = 'mongodb://127.0.0.1:27017/bankApp';
+const dbHost = process.env.DB_HOST;
+const dbPort = process.env.DB_PORT;
+const dbName = process.env.DB_NAME;
+
+const mongoURI = `mongodb://${dbHost}:${dbPort}/${dbName}`;
 
 // connect to MongoDB
 const connectDB = async () => {

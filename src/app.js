@@ -4,6 +4,10 @@ import loginRouter from './routes/login.js';
 import regRouter from './routes/register.js';
 import userRouter from './routes/user.js';
 import connectDB from './models/dbConnect.js';
+import dotenv from 'dotenv';
+
+// load .env variables
+dotenv.config();
 
 const app = express();
 
