@@ -1,6 +1,7 @@
 import express from 'express';
 import { checkSchema, validationResult } from 'express-validator';
-import otpGenerator from 'otp-generator';
+import generateOtp from '../utils/genrateOtp.js';
+import User from '../models/user_schema.js';
 
 
 // TODO: save in redis
@@ -72,7 +73,7 @@ router.get('/', (req, res) => {
 });
 
 
-router.post('/', checkSchema(userRegisterSchema), (req, res) => {
+router.post('/', checkSchema(userRegisterSchema), async (req, res) => {
     // validate data
     const errors = validationResult(req);
 
@@ -80,11 +81,20 @@ router.post('/', checkSchema(userRegisterSchema), (req, res) => {
         return res.status(400).json({ errors: errors.array() });
     }
 
-    const { email } = req.body;
+    // check that user is not in database
+    const { email, phone, password } = req.body;
+    const existingUser = await User.findByEmailOrPhone(email, phone);
+    if (existingUser) {
+        return res.status(400).json({ message: 'User already exists' });
+    }
+
+    // create user
+    const newUser = new User({ email, phone, password });
+    newUser.save();
 
     // generate and send otp to email
-    const otp = otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false, lowerCaseAlphabets: false });
-    console.log("sending otp ...")
+    const otp = generateOtp();
+    console.log(`sending otp ${otp} to email ${email}`)
 
     usersOtp.set(phone, { otp });
 
@@ -92,7 +102,7 @@ router.post('/', checkSchema(userRegisterSchema), (req, res) => {
 })
 
 
-router.post('/verify-passcode', checkSchema(userOtpSchema), (req, res) => {
+router.post('/verify-passcode', checkSchema(userOtpSchema), async (req, res) => {
 
     const errors = validationResult(req);
 
@@ -102,16 +112,16 @@ router.post('/verify-passcode', checkSchema(userOtpSchema), (req, res) => {
 
     const { email, otp } = req.body;
 
-    const user = users.find(email => u.email);
-    if (!user) return res.status(401).send('Invalid credentials');
+    const currentUser = await User.findByEmailOrPhone(email);
+    if (!currentUser) return res.status(401).send('Invalid credentials');
 
     // check otp
     if (otp != usersOtp.get(email)) {
         return res.status(401).send('Wrong otp');
     }
 
-    // generate token
-    const token = generateToken(user.id);
+    // generate token - signup completed
+    const token = generateToken(currentUser.email);
     res.status(200).json({ token });
 
 })
