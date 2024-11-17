@@ -8,19 +8,13 @@ const router = express.Router();
 router.use(jwtMiddleware);
 
 router.post('/home', (req, res) => {
-    res.send("Welcome to dashboard");
+    const userEmail = req.user.email;
+    res.status(200).json(`Welcome to dashboard ${userEmail}`);
 });
 
 
+// should be done with websocket
 router.get('/transactions', (req, res) => {
-    res.status(200).json({
-        "transactions": [
-            {
-                "transactionId": "string",
-                "amount": 0
-            }
-        ]
-    })
 })
 
 router.put('/transactions', (req, res) => {

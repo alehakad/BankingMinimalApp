@@ -17,6 +17,7 @@ const userSchema = new Schema({
     password: { type: String, required: true, unique: true },
     amount: { type: Number, default: 0 },
     created: { type: Date, default: Date.now },
+    verified: { type: Boolean, default: false }, // if passcode verified
     transactions: [transactionSchema],
 })
 
@@ -37,11 +38,11 @@ userSchema.pre('save', async function (next) {
 
 
 // check password 
-userSchema.methods.comparePassword = async function(passedPassword) {
+userSchema.methods.comparePassword = async function (passedPassword) {
     return bcrypt.compare(passedPassword, this.password);
 }
 
-userSchema.statics.findByEmailOrPhone = async function(email, phone) {
+userSchema.statics.findByEmailOrPhone = async function (email, phone) {
     const user = await this.findOne({ $or: [{ email }, { phone }] });
     return user;
 }

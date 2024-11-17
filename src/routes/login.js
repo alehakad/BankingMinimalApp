@@ -31,6 +31,9 @@ router.post('/', checkSchema(userLoginSchema), async (req, res) => {
     const existingUser = await User.findByEmailOrPhone(email);
     if (!existingUser) return res.status(401).send('Invalid credentials');
 
+    // check user verified
+    if (!existingUser.verified) return res.status(403).send('Account not verified');
+
     const checkPassword = await existingUser.comparePassword(password);
     if (!checkPassword) {
         return res.status(401).json({ message: 'Wrong password or email' });

@@ -1,7 +1,4 @@
 import nodemailer from 'nodemailer';
-import dotenv from 'dotenv';
-
-dotenv.config();
 
 const senderEmail = process.env.SENDER_EMAIL;
 const senderAppPassword = process.env.SENDER_APP_KEY;
@@ -18,7 +15,6 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-
 function sendPasscode(receiverEmail, passcode) {
     const mailOptions = {
         from: senderEmail,
@@ -32,6 +28,6 @@ function sendPasscode(receiverEmail, passcode) {
         .catch(error => console.error("Error sending email:", error));
 }
 
-if (import.meta.url === `file://${process.argv[1]}`)  {
+if (import.meta.url === `file://${process.argv[1]}`) {
     sendPasscode("", "123456")
 }

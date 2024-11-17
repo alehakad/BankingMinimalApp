@@ -85,17 +85,19 @@ router.post('/', checkSchema(userRegisterSchema), async (req, res) => {
         return res.status(400).json({ message: 'User already exists' });
     }
 
-    // create user
-    const newUser = new User({ email, phone, password });
+    // create user with random amount
+    const amount = Math.floor(Math.random() * 10000);
+    const newUser = new User({ email, phone, password, amount });
     newUser.save();
 
-    // generate and send otp to email
+    // generate otp
     const otp = generateOtp();
+    // send otp
     console.log(`sending otp ${otp} to email ${email}`)
 
     usersOtp.set(email, otp);
 
-    return res.status(200).json({ message: 'OTP sent successfully' });
+    return res.status(201).json({ message: 'OTP sent successfully' });
 })
 
 
@@ -117,6 +119,9 @@ router.post('/verify-passcode', checkSchema(userOtpSchema), async (req, res) => 
         return res.status(401).send('Wrong otp');
     }
 
+    // change user verified flag
+    currentUser.verified = true;
+    await currentUser.save();
     // generate token - signup completed
     const token = generateToken(currentUser.email);
     return res.status(200).json({ token });
