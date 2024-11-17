@@ -197,10 +197,9 @@ components:
     Transaction:
       type: object
       properties:
-        sender:
-          $ref: '#/components/schemas/User'
         receiver:
-          $ref: '#/components/schemas/User'
+          type: string
+          description: Email of user to send to
         amount: 
           type: integer
           description: Amount involved in the transaction

@@ -1,7 +1,6 @@
 import express from 'express';
 import { checkSchema, validationResult } from 'express-validator';
 import generateOtp from '../utils/genrateOtp.js';
-import generateToken from '../utils/generateToken.js';
 import User from '../models/userSchema.js';
 
 

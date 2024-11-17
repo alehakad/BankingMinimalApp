@@ -43,7 +43,7 @@ userSchema.methods.comparePassword = async function (passedPassword) {
 }
 
 userSchema.statics.findByEmailOrPhone = async function (email, phone) {
-    const user = await this.findOne({ $or: [{ email }, { phone }] });
+    const user = await this.findOne({ $or: [{ email }, { phone }] }).select('email phone amount verified transactions');
     return user;
 }
 
