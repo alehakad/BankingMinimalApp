@@ -1,7 +1,7 @@
 import express from 'express';
 import { checkSchema, validationResult } from 'express-validator';
-import generateToken from "../utils/token.js";
-import User from '../models/user_schema.js';
+import generateToken from "../utils/generateToken.js";
+import User from '../models/userSchema.js';
 
 const userLoginSchema = {
     email: {

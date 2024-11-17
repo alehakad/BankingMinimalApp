@@ -1,7 +1,8 @@
 import express from 'express';
 import { checkSchema, validationResult } from 'express-validator';
 import generateOtp from '../utils/genrateOtp.js';
-import User from '../models/user_schema.js';
+import generateToken from '../utils/generateToken.js';
+import User from '../models/userSchema.js';
 
 
 // TODO: save in redis
@@ -41,15 +42,11 @@ const userRegisterSchema = {
 
 
 const userOtpSchema = {
-    phone: {
-        matches: {
-            options: [/^\+\d+$/], // phone should start with +
-            errorMessage: 'Phone number must start with a + and contain only digits afterwards',
+    email: {
+        isEmail: {
+            errorMessage: 'Please provide a valid email',
         },
-        isLength: {
-            options: { min: 10, max: 15 },
-            errorMessage: 'Phone number must be between 10 and 15 characters',
-        },
+        normalizeEmail: true,
     },
     passcode: {
         isLength: {
@@ -98,7 +95,7 @@ router.post('/', checkSchema(userRegisterSchema), async (req, res) => {
 
     usersOtp.set(phone, { otp });
 
-    res.status(200);
+    return res.status(200).json({ message: 'OTP sent successfully' });
 })
 
 
@@ -122,7 +119,7 @@ router.post('/verify-passcode', checkSchema(userOtpSchema), async (req, res) => 
 
     // generate token - signup completed
     const token = generateToken(currentUser.email);
-    res.status(200).json({ token });
+    return res.status(200).json({ token });
 
 })
 

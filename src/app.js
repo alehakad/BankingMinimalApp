@@ -3,7 +3,7 @@ import docsRouter from './routes/docs.js';
 import loginRouter from './routes/login.js';
 import regRouter from './routes/register.js';
 import userRouter from './routes/user.js';
-import connectDB from './models/db_connect.js';
+import connectDB from './models/dbConnect.js';
 
 const app = express();
 

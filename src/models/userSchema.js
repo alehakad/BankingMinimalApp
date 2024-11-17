@@ -41,7 +41,7 @@ userSchema.methods.comparePassword = async function(passedPassword) {
     return bcrypt.compare(passedPassword, this.password);
 }
 
-userSchema.static.findByEmailOrPhone = async function(email, phone) {
+userSchema.statics.findByEmailOrPhone = async function(email, phone) {
     const user = await this.findOne({ $or: [{ email }, { phone }] });
     return user;
 }
