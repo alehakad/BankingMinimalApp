@@ -51,7 +51,7 @@ const userOtpSchema = {
     passcode: {
         isLength: {
             options: { min: 6, max: 6 },
-            errorMessage: 'OTP should be between 6 numbers',
+            errorMessage: 'OTP should be 6 numbers',
         },
         matches: {
             options: [/^\d+$/], // only numbers
@@ -93,7 +93,7 @@ router.post('/', checkSchema(userRegisterSchema), async (req, res) => {
     const otp = generateOtp();
     console.log(`sending otp ${otp} to email ${email}`)
 
-    usersOtp.set(phone, { otp });
+    usersOtp.set(email, otp);
 
     return res.status(200).json({ message: 'OTP sent successfully' });
 })
@@ -107,13 +107,13 @@ router.post('/verify-passcode', checkSchema(userOtpSchema), async (req, res) => 
         return res.status(400).json({ errors: errors.array() });
     }
 
-    const { email, otp } = req.body;
+    const { email, passcode } = req.body;
 
     const currentUser = await User.findByEmailOrPhone(email);
     if (!currentUser) return res.status(401).send('Invalid credentials');
 
     // check otp
-    if (otp != usersOtp.get(email)) {
+    if (!passcode || passcode != usersOtp.get(email)) {
         return res.status(401).send('Wrong otp');
     }
 
