@@ -19,7 +19,7 @@ const userSchema = new Schema({
     created: { type: Date, default: Date.now },
     verified: { type: Boolean, default: false }, // if passcode verified
     transactions: [transactionSchema],
-})
+});
 
 
 // middleware to hash password on creation
@@ -41,6 +41,7 @@ userSchema.pre('save', async function (next) {
 userSchema.methods.comparePassword = async function (passedPassword) {
     return bcrypt.compare(passedPassword, this.password);
 }
+
 
 userSchema.statics.findByEmailOrPhone = async function (email, phone) {
     const user = await this.findOne({ $or: [{ email }, { phone }] }).select('email phone amount verified transactions');
