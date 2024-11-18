@@ -38,10 +38,6 @@ paths:
       responses:
         '201':
           description: User created
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthResponse'
         '400':
           description: Bad Request – Missing or malformed registration data
         '409':
@@ -69,9 +65,9 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LoginUser'
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginUser'
       responses:
         '200':
           description: User logged in successfully
@@ -121,10 +117,6 @@ paths:
       responses:
         '200':
           description: Passcode verified successfully, registration completed
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AuthResponse'
         '400':
           description: Bad Request – Invalid passcode or email mismatch
           content:
@@ -241,8 +233,6 @@ components:
     AuthResponse:
       type: object
       properties:
-        user:
-          $ref: '#/components/schemas/User'
         token:
           type: string
           description: JWT for authenticated requests
