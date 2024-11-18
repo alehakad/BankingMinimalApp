@@ -1,16 +1,9 @@
 import express from 'express';
-import { checkSchema, validationResult } from 'express-validator';
 import generateToken from "../utils/generateToken.js";
 import User from '../models/userSchema.js';
+import validateRequest from '../middleware/validator.js';
+import {userLoginSchema} from '../validators/authValidators.js';
 
-const userLoginSchema = {
-    email: {
-        isEmail: {
-            errorMessage: 'Please provide a valid email',
-        },
-        normalizeEmail: true,
-    }
-};
 
 const router = express.Router();
 
@@ -19,14 +12,9 @@ router.get('/', async (req, res) => {
     res.send('Login page');
 });
 
-router.post('/', checkSchema(userLoginSchema), async (req, res) => {
+router.post('/', validateRequest(userLoginSchema), async (req, res) => {
     const { email, password } = req.body;
 
-    // validate data
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
     // authenticate user
     const existingUser = await User.findByEmailOrPhone(email);
     if (!existingUser) return res.status(401).json({ error: 'Invalid credentials' });

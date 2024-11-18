@@ -131,8 +131,8 @@ paths:
           description: Internal server error – Error occurred during passcode verification
 
   /user/transactions:
-    put:
-      summary: Update the list of transactions for a user
+    patch:
+      summary: Add transaction to the list of user transactions
       tags:
         - user
       description: Adds a new transaction for a user

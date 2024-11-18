@@ -1,4 +1,5 @@
 import express from 'express';
+import helmet from 'helmet';
 import docsRouter from './routes/docs.js';
 import loginRouter from './routes/login.js';
 import regRouter from './routes/register.js';
@@ -14,6 +15,10 @@ const app = express();
 // connect to datebase
 connectDB();
 
+
+// add helmet security middleware
+app.use(helmet());
+// parse json
 app.use(express.json());
 
 app.use('/docs', docsRouter);

@@ -1,28 +1,12 @@
 import express from 'express';
 import jwtMiddleware from "../middleware/auth.js";
-import { checkSchema, validationResult } from 'express-validator';
 import User from '../models/userSchema.js';
 import mongoose from 'mongoose';
+import validateRequest from '../middleware/validator.js';
+import { transactionSchema } from '../validators/dashboardValidators.js';
 
 
 
-const transactionSchema = {
-    'transaction.receiver': {
-        isEmail: {
-            errorMessage: 'Please provide a valid email',
-        },
-        normalizeEmail: true,
-    },
-    'transaction.amount': {
-        isFloat: {
-            options: { gt: 0 },
-            errorMessage: 'Amount must be greater than 0',
-        },
-        isInt: {
-            errorMessage: 'Amount must be an integer',
-        },
-    },
-};
 const router = express.Router();
 
 // protect route
@@ -58,7 +42,7 @@ router.get('/home', async (req, res) => {
 // router.get('/transactions', async (req, res) => {
 // });
 
-router.put('/transactions', checkSchema(transactionSchema), async (req, res) => {
+router.patch('/transactions', validateRequest(transactionSchema), async (req, res) => {
 
     const errors = validationResult(req);
 
@@ -99,7 +83,7 @@ router.put('/transactions', checkSchema(transactionSchema), async (req, res) => 
         })
 
 
-        return res.status(200).json({message : 'Transaction completed'});
+        return res.status(200).json({ message: 'Transaction completed' });
     }
     return res.status(401).json({ error: 'Unauthorized: No email found in token' });
 })
