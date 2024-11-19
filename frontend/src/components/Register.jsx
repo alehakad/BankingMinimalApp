@@ -17,7 +17,8 @@ const RegisterForm = () => {
                 console.log('Success:', response.data);
             })
             .catch((error) => {
-                console.error('Error:', error);
+                console.error('Error Status:', error.response.status);
+                console.error('Error Data:', error.response.data);
             });
     }
 
