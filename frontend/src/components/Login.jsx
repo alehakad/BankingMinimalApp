@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import { TextField, Button } from "@mui/material";
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [emailError, setEmailError] = useState(false)
     const [passwordError, setPasswordError] = useState(false)
+
+    const navigate = useNavigate();
 
     const handleSubmit = (event) => {
         event.preventDefault()
@@ -24,6 +28,24 @@ const Login = () => {
         if (email && password) {
             console.log(email, password)
         }
+
+        // send request to login
+        axios.post('http://localhost:5000/login', { email, password })
+            .then((response) => {
+                console.log('Success:', response.data);
+                // set token 
+                const token = response.data.token;
+                console.log("Before setting:", localStorage.getItem("jwtToken"));
+                localStorage.setItem("jwtToken", token);
+                console.log("After setting:", localStorage.getItem("jwtToken"));
+                // navigate to dashboard
+                navigate('/');
+            })
+            .catch((error) => {
+                console.error('Error Status:', error.response.status);
+                console.error('Error Data:', error.response.data);
+                // display errors
+            });
     }
 
     return (
@@ -57,7 +79,7 @@ const Login = () => {
                 <Button variant="outlined" color="secondary" type="submit">Login</Button>
 
             </form>
-            <small>Need an account? <Link to="/">Register here</Link></small>
+            <small>Need an account? <Link to="/register">Register here</Link></small>
         </React.Fragment>
     );
 }

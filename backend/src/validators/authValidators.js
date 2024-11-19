@@ -34,6 +34,7 @@ const userRegisterSchema = Joi.object({
 
 const userLoginSchema = Joi.object({
     email: emailValidator,
+    password: passwordValidator
 });
 
 const userOtpSchema = Joi.object({

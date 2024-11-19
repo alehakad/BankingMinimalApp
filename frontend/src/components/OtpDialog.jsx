@@ -6,11 +6,14 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 
-const OtpDialog = ({ open, handleClose }) => {
+const OtpDialog = ({ open, handleClose, email }) => {
 
   const resendCode = () => { console.log("resend otp code"); };
+  const navigate = useNavigate();
 
   return (
     <div>
@@ -26,8 +29,18 @@ const OtpDialog = ({ open, handleClose }) => {
             const passcode = formJson.passcode;
             console.log(passcode);
             // send passcode to backend
-            // close on success
-            // handleClose();
+            axios.post('http://localhost:5000/register/verify-passcode', { email, passcode })
+              .then((response) => {
+                // save token
+                const token = response.data.token;
+                localStorage.setItem("jwtToken", token);
+                handleClose();
+                // redirect to home
+                navigate('/');
+              })
+              .catch((error) => {
+                handleClose();
+              });
           },
         }}
       >

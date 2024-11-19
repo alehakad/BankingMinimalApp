@@ -25,6 +25,7 @@ const RegisterForm = () => {
             .then((response) => {
                 console.log('Success:', response.data);
                 // show field to enter otp
+                setShowErrors(false);
                 handleOtpDialogOpen();
             })
             .catch((error) => {
@@ -37,7 +38,7 @@ const RegisterForm = () => {
 
     return (
         <React.Fragment>
-            <OtpDialog open={isOtpDialogOpen} handleClose={handleOtpDialogClose} />
+            <OtpDialog open={isOtpDialogOpen} handleClose={handleOtpDialogClose} email={email} />
 
             <h2>Register</h2>
             {showErrors ? <Alert severity="error">

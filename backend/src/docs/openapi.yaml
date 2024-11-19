@@ -96,7 +96,7 @@ paths:
                 type: string
                 example: "<html>...</html>"
 
-  /verify-passcode:
+  /register/verify-passcode:
     post:
       summary: Verifies the passcode entered by the user
       tags:
@@ -116,7 +116,11 @@ paths:
                   description: The passcode entered by the user (received via SMS)
       responses:
         '200':
-          description: Passcode verified successfully, registration completed
+          description: User logged in successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
         '400':
           description: Bad Request – Invalid passcode or email mismatch
           content:

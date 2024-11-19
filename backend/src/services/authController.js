@@ -60,12 +60,13 @@ const verifyOtp = async (req, res) => {
     if (!passcode || passcode != usersOtp.get(email)) {
         return res.status(401).json({ error: 'Wrong otp' });
     }
-
     // change user verified flag
     currentUser.verified = true;
     await currentUser.save();
-    // user will be redirected to login
-    res.status(200).json({ message: 'Account verified' });
+    // user will be redirected to home
+    const token = generateToken(currentUser.email);
+
+    res.status(200).json({ message: 'Account verified', token });
 
 }
 
