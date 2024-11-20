@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React from "react";
 import { useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import UserProfileCard from "./UserProfileCard";
+import useAuth from "../hooks/useAuth";
 
 const Dashboard = () => {
-    const [userData, setUserData] = useState(null);
+
+    const userData = useAuth();
     const navigate = useNavigate();
 
     const logout = () => {
@@ -14,34 +15,18 @@ const Dashboard = () => {
         navigate('/login');
     };
 
+    const goToTransfer = () => {
+        navigate('/transfer')
+    }
 
-    // get user data once
-    useEffect(() => {
-        console.log("useEffect ran!");
-        const fetchUserData = async () => {
-            const token = localStorage.getItem('jwtToken');
-            console.log(token);
-            await axios.get('http://localhost:5000/user/home', {
-                headers: { Authorization: `Bearer ${token}` },
-            })
-                .then((response) => {
-                    console.log(response.data);
-                    setUserData(response.data.user);
-                })
-                .catch((error) => {
-                    console.log(error.response.data);
-                    navigate('/');
-                });
-        };
-        fetchUserData();
-    }, [navigate]);
-    
+
 
     return (
         <React.Fragment>
-            Welcome to Dashboard
+            Dashboard
             <UserProfileCard user={userData} />
             <Button onClick={logout}>Logout</Button>
+            <Button onClick={goToTransfer}>Transfer money</Button>
         </React.Fragment>
     );
 }

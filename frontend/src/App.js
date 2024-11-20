@@ -10,6 +10,7 @@ import Login from './components/Login';
 import RegisterForm from './components/Register';
 import Dashboard from './components/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
+import TransferPage from './components/TransferPage';
 
 function App() {
 
@@ -24,6 +25,12 @@ function App() {
             <Route path="/" element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            } />
+
+            <Route path="/transfer" element={
+              <ProtectedRoute>
+                <TransferPage />
               </ProtectedRoute>
             } />
 
