@@ -12,21 +12,24 @@ import {
 } from '@mui/material';
 
 const UserProfileCard = ({ user }) => {
-    const { name, email, phone, balance, transactions } = user;
+    if (!user) {
+        return <p>Loading...</p>;
+    }
+    const { email, phone, amount, transactions } = user;
 
     return (
         <Card sx={{ maxWidth: 400, margin: '0 auto', padding: 2, borderRadius: 2, boxShadow: 3 }}>
             {/* Profile Header */}
             <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
                 <Avatar sx={{ bgcolor: 'primary.main', width: 56, height: 56 }}>
-                    {name[0].toUpperCase()}
+                    {email.toUpperCase()}
                 </Avatar>
                 <Box sx={{ marginLeft: 2 }}>
                     <Typography variant="h6" component="div">
-                        {name}
+                        {email}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                        Balance: ${balance.toFixed(2)}
+                        Balance: ${amount.toFixed(2)}
                     </Typography>
                 </Box>
             </Box>

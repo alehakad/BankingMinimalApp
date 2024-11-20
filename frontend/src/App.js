@@ -18,7 +18,7 @@ function App() {
   return (
     <React.Fragment>
       <ThemeProvider theme={theme}>
-        <AppBar position='inline' color="primary"><Toolbar>Welcome to GreenLeaves Bank!</Toolbar></AppBar>
+        <AppBar position='sticky' color="primary"><Toolbar>Welcome to GreenLeaves Bank!</Toolbar></AppBar>
         <Container>
           <Routes>
             <Route path="/" element={

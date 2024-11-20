@@ -31,11 +31,12 @@ const addTransaction = async (req, res) => {
         // start session
         const session = await mongoose.startSession();
 
+        const transaction = { sender: senderUser._id, receiver: receiverUser._id, amount };
         await session.withTransaction(async (session) => {
             // check balance
             if (senderUser.amount < amount) return res.status(403).json({ error: 'Insufficient balance' });
             // add transaction to users lists
-            const transaction = { sender: senderUser._id, receiver: receiverUser._id, amount };
+
             senderUser.transactions.push(transaction);
             receiverUser.transactions.push(transaction);
 
@@ -48,7 +49,7 @@ const addTransaction = async (req, res) => {
         })
 
 
-        return res.status(200).json({ message: 'Transaction completed' });
+        return res.status(200).json({ message: 'Transaction completed', transaction });
     }
     return res.status(401).json({ error: 'Unauthorized: No email found in token' });
 }
