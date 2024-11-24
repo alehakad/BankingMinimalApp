@@ -3,12 +3,15 @@ import { TextField, Button } from "@mui/material";
 import { Link } from "react-router-dom";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useNotification } from '../context/NotificationContext.js';
 
 const Login = () => {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [emailError, setEmailError] = useState(false)
     const [passwordError, setPasswordError] = useState(false)
+
+    const { showError } = useNotification();
 
     const navigate = useNavigate();
 
@@ -42,9 +45,20 @@ const Login = () => {
                 navigate('/');
             })
             .catch((error) => {
-                console.error('Error Status:', error.response.status);
-                console.error('Error Data:', error.response.data);
                 // display errors
+                if (error.response) {
+                    console.error('Error Status:', error.response.status);
+                    console.error('Error Data:', error.response.data);
+                    showError(error.response.data.error);
+                }
+                else if (error.request) {
+                    console.error('No response received:', error.request);
+                    showError("Server not avaliable");
+                }
+                else {
+                    console.error('Error:', error.message);
+                    showError(error.message);
+                }
             });
     }
 

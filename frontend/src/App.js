@@ -11,6 +11,9 @@ import RegisterForm from './components/Register';
 import Dashboard from './components/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import TransferPage from './components/TransferPage';
+import { NotificationProvider } from './context/NotificationContext.js';
+import NotificationAlert from './components/NotificationAlert';
+
 
 function App() {
 
@@ -18,27 +21,30 @@ function App() {
 
   return (
     <React.Fragment>
-      <ThemeProvider theme={theme}>
-        <AppBar position='sticky' color="primary"><Toolbar>Welcome to GreenLeaves Bank!</Toolbar></AppBar>
-        <Container>
-          <Routes>
-            <Route path="/" element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            } />
+      <NotificationProvider>
+        <ThemeProvider theme={theme}>
+          <AppBar position='sticky' color="primary"><Toolbar>Welcome to GreenLeaves Bank!</Toolbar></AppBar>
+          <NotificationAlert />
+          <Container>
+            <Routes>
+              <Route path="/" element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              } />
 
-            <Route path="/transfer" element={
-              <ProtectedRoute>
-                <TransferPage />
-              </ProtectedRoute>
-            } />
+              <Route path="/transfer" element={
+                <ProtectedRoute>
+                  <TransferPage />
+                </ProtectedRoute>
+              } />
 
-            <Route path="/register" element={<RegisterForm />} />
-            <Route path="/login" element={<Login />} />
-          </Routes>
-        </Container>
-      </ThemeProvider>
+              <Route path="/register" element={<RegisterForm />} />
+              <Route path="/login" element={<Login />} />
+            </Routes>
+          </Container>
+        </ThemeProvider>
+      </NotificationProvider>
     </React.Fragment>
   );
 }
