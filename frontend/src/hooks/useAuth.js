@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../utils/axiosClient";
 
 
 // get user data once
@@ -12,9 +12,10 @@ const useAuth = () => {
     useEffect(() => {
         const fetchUserData = async () => {
             const token = localStorage.getItem('jwtToken');
+            console.log(token);
             try {
 
-                const response = await axios.get('http://localhost:5000/user/home', {
+                const response = await api.get('/user/home', {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 

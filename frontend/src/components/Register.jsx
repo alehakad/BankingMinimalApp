@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { TextField, Button } from '@mui/material';
 import { Link } from "react-router-dom";
-import axios from 'axios';
 import OtpDialog from './OtpDialog';
 import { useNotification } from '../context/NotificationContext.js';
+import api from "../utils/axiosClient.js";
 
 
 const RegisterForm = () => {
@@ -12,7 +12,7 @@ const RegisterForm = () => {
     const [phone, setPhone] = useState('')
     const [isOtpDialogOpen, setIsOtpDialogOpen] = useState(false);
 
-    const { showError } = useNotification();
+    const { showSuccess, showError } = useNotification();
 
     const handleOtpDialogOpen = () => setIsOtpDialogOpen(true);
     const handleOtpDialogClose = () => setIsOtpDialogOpen(false);
@@ -20,16 +20,27 @@ const RegisterForm = () => {
     function handleSubmit(event) {
         event.preventDefault();
         console.log(email, password, phone)
-        axios.post('http://localhost:5000/register', { email, password, phone })
+        api.post('/register', { email, password, phone })
             .then((response) => {
                 console.log('Success:', response.data);
+                showSuccess('Otp verified');
                 // show field to enter otp
                 handleOtpDialogOpen();
             })
             .catch((error) => {
-                console.error('Error Status:', error.response.status);
-                console.error('Error Data:', error.response.data);
-                showError(error.response.data.error);
+                if (error.response) {
+                    console.error('Error Status:', error.response.status);
+                    console.error('Error Data:', error.response.data);
+                    showError(error.response.data.error);
+                }
+                else if (error.request) {
+                    console.error('No response received:', error.request);
+                    showError("Server not avaliable");
+                }
+                else {
+                    console.error('Error:', error.message);
+                    showError(error.message);
+                }
             });
     }
 

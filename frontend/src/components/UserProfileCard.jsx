@@ -18,13 +18,12 @@ const UserProfileCard = ({ user }) => {
     const { email, phone, amount, transactions } = user;
 
     return (
-        <Card sx={{ maxWidth: 400, margin: '0 auto', padding: 2, borderRadius: 2, boxShadow: 3 }}>
+        <Card sx={{ maxWidth: 400, margin: '20px auto', padding: 3, borderRadius: 2, boxShadow: 3 }}>
             {/* Profile Header */}
-            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 2 }}>
-                <Avatar alt="User Image" sx={{ bgcolor: 'primary.main', width: 56, height: 56 }}>
-                </Avatar>
+            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 3 }}>
+                <Avatar alt="User Image" sx={{ bgcolor: 'primary.main', width: 64, height: 64 }} />
                 <Box sx={{ marginLeft: 2 }}>
-                    <Typography variant="h6" component="div">
+                    <Typography variant="h6" component="div" sx={{ fontWeight: 'bold' }}>
                         {email}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
@@ -38,8 +37,12 @@ const UserProfileCard = ({ user }) => {
                 <Typography variant="subtitle1" sx={{ fontWeight: 'bold', marginBottom: 1 }}>
                     Contact Info
                 </Typography>
-                <Typography variant="body2">📧 {email}</Typography>
-                <Typography variant="body2">📞 {phone}</Typography>
+                <Typography variant="body2" sx={{ marginBottom: 1 }}>
+                    <span role="img" aria-label="email">📧</span> {email}
+                </Typography>
+                <Typography variant="body2" sx={{ marginBottom: 1 }}>
+                    <span role="img" aria-label="phone">📞</span> {phone}
+                </Typography>
 
                 <Divider sx={{ marginY: 2 }} />
 
@@ -70,10 +73,10 @@ const UserProfileCard = ({ user }) => {
                             </React.Fragment>
                         ))}
                     </List>
-                    : 'No transactions yet'}
+                    : <Typography variant="body2" color="text.secondary">No transactions yet</Typography>}
             </CardContent>
         </Card>
     );
-};
+}
 
 export default UserProfileCard;

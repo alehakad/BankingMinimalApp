@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { TextField, Button } from "@mui/material";
 import { Link } from "react-router-dom";
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useNotification } from '../context/NotificationContext.js';
+import api from '../utils/axiosClient';
 
 const Login = () => {
     const [email, setEmail] = useState("")
@@ -33,7 +33,7 @@ const Login = () => {
         }
 
         // send request to login
-        axios.post('http://localhost:5000/login', { email, password })
+        api.post('/login', { email, password })
             .then((response) => {
                 console.log('Success:', response.data);
                 // set token 

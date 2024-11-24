@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import Button from '@mui/material/Button';
 import useAuth from "../hooks/useAuth";
-import { TextField, MenuItem, Select } from "@mui/material";
-import axios from "axios";
+import { TextField, Button, Card, CardContent, Typography, Box, Divider } from "@mui/material";
+import { useNotification } from '../context/NotificationContext.js';
+import api from "../utils/axiosClient.js";
 
 
 const TransferPage = () => {
@@ -11,6 +11,8 @@ const TransferPage = () => {
     const [receiverEmail, setReceiverEmail] = useState("");
     const [amount, setAmount] = useState(0.0);
 
+    const { showSuccess, showError } = useNotification();
+
     if (!userData) {
         return <div>Loading...</div>;
     }
@@ -18,53 +20,116 @@ const TransferPage = () => {
     function sendMoney(event) {
         event.preventDefault();
         console.log(receiverEmail, amount);
-        axios.patch('http://localhost:5000/user/transactions', { transaction: { receiver: receiverEmail, amount } })
+        const token = localStorage.getItem('jwtToken');
+        api.patch('/user/transactions', {
+
+            transaction: { receiver: receiverEmail, amount }
+        },
+            { headers: { Authorization: `Bearer ${token}` } },)
             .then((response) => {
                 console.log('Success:', response.data);
+                showSuccess("Operation completed");
             })
             .catch((error) => {
-                console.error('Error Status:', error.response.status);
-                console.error('Error Data:', error.response.data);
+                if (error.response) {
+                    console.error('Error Status:', error.response.status);
+                    console.error('Error Data:', error.response.data);
+                    showError(error.response.data.error);
+                }
+                else if (error.request) {
+                    console.error('No response received:', error.request);
+                    showError("Server not avaliable");
+                }
+                else {
+                    console.error('Error:', error.message);
+                    showError(error.message);
+                }
             });
     }
 
-    const makeTransfer = () => {
-        console.log("Make transfer");
-    }
-
     return (
-        <React.Fragment>
-            <form onSubmit={sendMoney}>
-
-                <Select
-                    value={receiverEmail}
-                    label="Receiver"
-                    onChange={e => setReceiverEmail(e.target.value)}
-                >
-                    <MenuItem value={1}>One</MenuItem>
-                    <MenuItem value={2}>Two</MenuItem>
-                    <MenuItem value={3}>Three</MenuItem>
-                </Select>
-
-                <TextField
-                    label="Enter amount"
-                    variant="outlined"
-                    value={amount}
-                    onChange={e => { setAmount(e.target.value) }}
-                    fullWidth
-                    type="text" // Use text for better validation handling
-                    inputProps={{
-                        inputMode: "decimal", // Allows decimal input on mobile
-                        pattern: "[0-9]*[.,]?[0-9]*", // Decimal pattern
+        <Card
+            sx={{
+                maxWidth: 400,
+                margin: '20px auto',
+                padding: 3,
+                borderRadius: 2,
+                boxShadow: 3,
+            }}
+        >
+            {/* Page Header */}
+            <Box sx={{ marginBottom: 3 }}>
+                <Typography
+                    variant="h6"
+                    component="div"
+                    sx={{
+                        fontWeight: 'bold',
+                        textAlign: 'center',
+                        color: 'primary.main',
                     }}
-                />
+                >
+                    Transfer Money
+                </Typography>
+            </Box>
 
+            <CardContent>
+                <form onSubmit={sendMoney}>
+                    {/* Receiver Email */}
+                    <Typography variant="subtitle1" sx={{ fontWeight: 'bold', marginBottom: 1 }}>
+                        Receiver Info
+                    </Typography>
+                    <TextField
+                        type="email"
+                        variant="outlined"
+                        color="primary"
+                        label="Receiver Email"
+                        onChange={(e) => setReceiverEmail(e.target.value)}
+                        value={receiverEmail}
+                        fullWidth
+                        required
+                        sx={{ marginBottom: 3 }}
+                    />
 
+                    {/* Transfer Amount */}
+                    <Typography variant="subtitle1" sx={{ fontWeight: 'bold', marginBottom: 1 }}>
+                        Amount
+                    </Typography>
+                    <TextField
+                        label="Enter Amount"
+                        variant="outlined"
+                        value={amount}
+                        onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
+                        fullWidth
+                        type="number"
+                        inputProps={{
+                            min: "0",
+                            step: "0.01",
+                        }}
+                        required
+                        sx={{ marginBottom: 3 }}
+                    />
 
-            </form>
-            <Button onClick={makeTransfer}>Transfer money</Button>
-        </React.Fragment>
+                    <Divider sx={{ marginY: 2 }} />
+
+                    {/* Submit Button */}
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        fullWidth
+                        type="submit"
+                        sx={{
+                            padding: 1.5,
+                            fontWeight: 'bold',
+                            textTransform: 'none',
+                            fontSize: '1rem',
+                        }}
+                    >
+                        Transfer Money
+                    </Button>
+                </form>
+            </CardContent>
+        </Card>
     );
-}
+};
 
 export default TransferPage;

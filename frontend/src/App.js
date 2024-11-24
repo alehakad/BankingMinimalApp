@@ -2,7 +2,7 @@
 import { AppBar, Toolbar } from '@mui/material';
 import { Container } from '@mui/system';
 import React from 'react';
-import theme from './components/theme';
+import theme from './utils/theme.js';
 import { ThemeProvider } from '@mui/material/styles';
 
 import { Route, Routes } from "react-router-dom"

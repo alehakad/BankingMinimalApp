@@ -6,8 +6,8 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import api from '../utils/axiosClient.js';
 
 
 const OtpDialog = ({ open, handleClose, email }) => {
@@ -29,7 +29,7 @@ const OtpDialog = ({ open, handleClose, email }) => {
             const passcode = formJson.passcode;
             console.log(passcode);
             // send passcode to backend
-            axios.post('http://localhost:5000/register/verify-passcode', { email, passcode })
+            api.post('register/verify-passcode', { email, passcode })
               .then((response) => {
                 // save token
                 const token = response.data.token;
