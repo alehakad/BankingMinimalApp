@@ -8,8 +8,8 @@ const getDashboard = async (req, res) => {
         const currentUser = await User.findByEmailOrPhone(userEmail);
         if (!currentUser) return res.status(401).json({ error: 'No user with such email' });
         // exclude password
-        const { email, phone, amount, transactions, name} = currentUser.toObject();
-        return res.status(200).json({ message: `Welcome to dashboard ${userEmail}`, user: { email, phone, amount, transactions, name} });
+        const { email, phone, amount, transactions, name } = currentUser.toObject();
+        return res.status(200).json({ message: `Welcome to dashboard ${userEmail}`, user: { email, phone, amount, transactions, name } });
     }
     return res.status(401).json({ error: 'Unauthorized: No email found in token' });
 };
@@ -54,4 +54,19 @@ const addTransaction = async (req, res) => {
     return res.status(401).json({ error: 'Unauthorized: No email found in token' });
 }
 
-export { getDashboard, addTransaction };
+const uploadImage = async (req, res) => {
+    if (!req.file) {
+        return res.status(400).send('No file uploaded');
+    }
+
+    const imageUrl = `/uploads/${req.file.filename}`;
+
+    // TODO: add url to database for user
+
+    res.status(200).json({
+        message: 'File uploaded successfully',
+        filePath: imageUrl
+    });
+}
+
+export { getDashboard, addTransaction, uploadImage };

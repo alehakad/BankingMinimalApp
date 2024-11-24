@@ -2,7 +2,9 @@ import express from 'express';
 import jwtMiddleware from "../middleware/auth.js";
 import validateRequest from '../middleware/validator.js';
 import { transactionSchema } from '../validators/dashboardValidators.js';
-import { addTransaction, getDashboard } from '../services/dashboardController.js';
+import { addTransaction, getDashboard, uploadImage } from '../services/dashboardController.js';
+import upload from '../utils/imageParser.js';
+
 
 const router = express.Router();
 
@@ -23,12 +25,9 @@ router.use((err, req, res, next) => {
 
 router.get('/home', getDashboard);
 
-
-// transaction are sent in /home get
-// router.get('/transactions', async (req, res) => {
-// });
-
 router.patch('/transactions', validateRequest(transactionSchema), addTransaction);
+
+router.post('/upload', upload.single('profileImage'), uploadImage);
 
 
 export default router;

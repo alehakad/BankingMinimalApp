@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Card,
     CardContent,
@@ -9,19 +9,51 @@ import {
     ListItemText,
     Divider,
     Box,
+    Button
 } from '@mui/material';
 
 const UserProfileCard = ({ user }) => {
+    const [imagePreview, setImagePreview] = useState(null); // State to manage the image preview
+
     if (!user) {
         return <p>Loading...</p>;
     }
     const { email, phone, amount, transactions, name } = user;
 
+    // handle image upload
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setImagePreview(URL.createObjectURL(file));
+
+        }
+    };
+
+
     return (
         <Card sx={{ maxWidth: 400, margin: '20px auto', padding: 3, borderRadius: 2, boxShadow: 3 }}>
             {/* Profile Header */}
-            <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: 3 }}>
-                <Avatar alt="User Image" sx={{ bgcolor: 'primary.main', width: 64, height: 64 }} />
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {/* Avatar Display */}
+            <Avatar 
+                alt="User Image"
+                src={imagePreview || 'default-image-url'} // Use the preview image or a default URL
+                sx={{ bgcolor: 'primary.main', width: 64, height: 64 }}
+            />
+            
+            {/* Image Upload Button */}
+            <input
+                type="file"
+                accept="image/*"
+                id="profile-image-upload"
+                style={{ display: 'none' }}
+                onChange={handleImageChange}
+            />
+            <label htmlFor="profile-image-upload">
+                <Button component="span" variant="outlined" color="primary" sx={{ mt: 2 }}>
+                    Update Profile Picture
+                </Button>
+            </label>
                 <Box sx={{ marginLeft: 2 }}>
                     <Typography variant="h6" component="div" sx={{ fontWeight: 'bold' }}>
                         {name}

@@ -21,6 +21,7 @@
     "joi": "^17.13.3",
     "mongoose": "^8.8.1",
     "morgan": "^1.10.0",
+    "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.16",
     "otp-generator": "^4.0.1",
     "swagger-ui-express": "^5.0.1",

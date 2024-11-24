@@ -35,6 +35,9 @@ app.use(morgan('combined'));
 // parse json
 app.use(express.json());
 
+// middleware to serve static images
+app.use('/uploads', express.static('uploads'));
+
 app.use('/docs', docsRouter);
 app.use('/login', loginRouter);
 app.use('/register', regRouter);
