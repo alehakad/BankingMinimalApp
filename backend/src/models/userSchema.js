@@ -12,14 +12,14 @@ const transactionSchema = new Schema({
 });
 
 const userSchema = new Schema({
-    email: { type: String, required: true, unique: true },
+    email: { type: String, required: true, unique: true, trim: true },
     phone: { type: String, required: true, unique: true },
     password: { type: String, required: true, unique: true },
+    name: { type: String, required: true, trim: true },
     amount: { type: Number, default: 0 },
-    created: { type: Date, default: Date.now },
     verified: { type: Boolean, default: false }, // if passcode verified
     transactions: [transactionSchema],
-});
+}, { timestamps: true });
 
 
 // middleware to hash password on creation

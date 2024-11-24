@@ -27,7 +27,7 @@ const loginUser = async (req, res) => {
 
 const registerUser = async (req, res) => {
     // check that user is not in database
-    const { email, phone, password } = req.body;
+    const { email, phone, password, name } = req.body;
     const existingUser = await User.findByEmailOrPhone(email, phone);
     if (existingUser) {
         return res.status(400).json({ error: 'User already exists' });
@@ -35,7 +35,7 @@ const registerUser = async (req, res) => {
 
     // create user with random amount
     const amount = Math.floor(Math.random() * 10000);
-    const newUser = new User({ email, phone, password, amount });
+    const newUser = new User({ email, phone, password, amount, name });
     newUser.save();
 
     // generate otp

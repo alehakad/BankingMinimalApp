@@ -15,7 +15,7 @@ const UserProfileCard = ({ user }) => {
     if (!user) {
         return <p>Loading...</p>;
     }
-    const { email, phone, amount, transactions } = user;
+    const { email, phone, amount, transactions, name } = user;
 
     return (
         <Card sx={{ maxWidth: 400, margin: '20px auto', padding: 3, borderRadius: 2, boxShadow: 3 }}>
@@ -24,7 +24,7 @@ const UserProfileCard = ({ user }) => {
                 <Avatar alt="User Image" sx={{ bgcolor: 'primary.main', width: 64, height: 64 }} />
                 <Box sx={{ marginLeft: 2 }}>
                     <Typography variant="h6" component="div" sx={{ fontWeight: 'bold' }}>
-                        {email}
+                        {name}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                         Balance: ${amount.toFixed(2)}

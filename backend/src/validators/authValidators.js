@@ -26,10 +26,19 @@ const passcodeValidator = Joi.string()
     .required()
     .error(new Error('OTP should be 6 numbers and must contain only digits'));
 
+const nameValidator = Joi.string()
+    .min(3)
+    .max(20)
+    .required()
+    .pattern(/^[A-Za-z ]+$/)
+    .error(new Error('Name must contain only letters and spaces, and be at least 3 characters long.'));
+
+
 const userRegisterSchema = Joi.object({
     email: emailValidator,
     phone: phoneValidator,
     password: passwordValidator,
+    name: nameValidator
 });
 
 const userLoginSchema = Joi.object({

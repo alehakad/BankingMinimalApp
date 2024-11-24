@@ -8,8 +8,8 @@ const getDashboard = async (req, res) => {
         const currentUser = await User.findByEmailOrPhone(userEmail);
         if (!currentUser) return res.status(401).json({ error: 'No user with such email' });
         // exclude password
-        const { email, phone, amount, transactions } = currentUser.toObject();
-        return res.status(200).json({ message: `Welcome to dashboard ${userEmail}`, user: { email, phone, amount, transactions } });
+        const { email, phone, amount, transactions, name} = currentUser.toObject();
+        return res.status(200).json({ message: `Welcome to dashboard ${userEmail}`, user: { email, phone, amount, transactions, name} });
     }
     return res.status(401).json({ error: 'Unauthorized: No email found in token' });
 };

@@ -7,9 +7,10 @@ import api from "../utils/axiosClient.js";
 
 
 const RegisterForm = () => {
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [phone, setPhone] = useState('')
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [phone, setPhone] = useState('');
+    const [name, setName] = useState('');
     const [isOtpDialogOpen, setIsOtpDialogOpen] = useState(false);
 
     const { showSuccess, showError } = useNotification();
@@ -19,11 +20,11 @@ const RegisterForm = () => {
 
     function handleSubmit(event) {
         event.preventDefault();
-        console.log(email, password, phone)
-        api.post('/register', { email, password, phone })
+        console.log(email, password, phone, name)
+        api.post('/register', { email, password, phone, name })
             .then((response) => {
                 console.log('Success:', response.data);
-                showSuccess('Otp verified');
+                showSuccess('New user created');
                 // show field to enter otp
                 handleOtpDialogOpen();
             })
@@ -50,6 +51,19 @@ const RegisterForm = () => {
 
             <h2>Register</h2>
             <form onSubmit={handleSubmit} action={<Link to="/login" />}>
+
+                <TextField
+                    type="text"
+                    variant='outlined'
+                    color='secondary'
+                    label="Name"
+                    onChange={e => setName(e.target.value)}
+                    value={name}
+                    required
+                    fullWidth
+                    sx={{ mb: 4 }}
+                />
+
                 <TextField
                     type="email"
                     variant='outlined'

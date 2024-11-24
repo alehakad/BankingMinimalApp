@@ -8,9 +8,12 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useNavigate } from 'react-router-dom';
 import api from '../utils/axiosClient.js';
+import { useNotification } from '../context/NotificationContext.js';
 
 
 const OtpDialog = ({ open, handleClose, email }) => {
+
+  const { showSuccess, showError } = useNotification();
 
   const resendCode = () => { console.log("resend otp code"); };
   const navigate = useNavigate();
@@ -31,6 +34,7 @@ const OtpDialog = ({ open, handleClose, email }) => {
             // send passcode to backend
             api.post('register/verify-passcode', { email, passcode })
               .then((response) => {
+                showSuccess("OTP verified");
                 // save token
                 const token = response.data.token;
                 localStorage.setItem("jwtToken", token);
@@ -39,6 +43,7 @@ const OtpDialog = ({ open, handleClose, email }) => {
                 navigate('/');
               })
               .catch((error) => {
+                showError("Error verifying OTP");
                 handleClose();
               });
           },
