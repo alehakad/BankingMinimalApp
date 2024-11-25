@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import User from '../models/userSchema.js';
+import { getUserFolderPath } from '../utils/imageParser.js';
 
 const getDashboard = async (req, res) => {
     if (req.auth && req.auth.userEmail) {
@@ -59,13 +60,15 @@ const uploadImage = async (req, res) => {
         return res.status(400).send('No file uploaded');
     }
 
-    const imageUrl = `/uploads/${req.file.filename}`;
     // add url to database for user
 
     const userEmail = req.auth.userEmail;
     const user = await User.findByEmailOrPhone(userEmail);
 
     if (!user) return res.status(401).json({ error: 'No user with such email' });
+
+    const folderPath = getUserFolderPath(userEmail);
+    const imageUrl = `/${folderPath}/${req.file.filename}`;
 
     user.profileImage = imageUrl;
     user.save();
