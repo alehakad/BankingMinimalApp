@@ -19,6 +19,7 @@ const userSchema = new Schema({
     amount: { type: Number, default: 0 },
     verified: { type: Boolean, default: false }, // if passcode verified
     transactions: [transactionSchema],
+    profileImage: { type: String } // url of profile image
 }, { timestamps: true });
 
 

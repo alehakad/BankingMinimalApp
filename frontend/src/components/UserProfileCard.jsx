@@ -11,49 +11,100 @@ import {
     Box,
     Button
 } from '@mui/material';
+import { useNotification } from '../context/NotificationContext';
+import api from "../utils/axiosClient.js";
+
 
 const UserProfileCard = ({ user }) => {
     const [imagePreview, setImagePreview] = useState(null); // State to manage the image preview
+    const [uploading, setUploading] = useState(false); // State to show upload status
+
+    const { showSuccess, showError } = useNotification();
 
     if (!user) {
         return <p>Loading...</p>;
     }
-    const { email, phone, amount, transactions, name } = user;
+    const { email, phone, amount, transactions, name, profileImage } = user;
 
     // handle image upload
-    const handleImageChange = (e) => {
+    const handleImageUpload = async (e) => {
+
         const file = e.target.files[0];
-        if (file) {
-            setImagePreview(URL.createObjectURL(file));
+        if (!file) {
+            showError("First select image!");
+            return;
+        }
+
+        setImagePreview(URL.createObjectURL(file));
+        setUploading(true);
+        try {
+            const token = localStorage.getItem('jwtToken');
+            // create form data
+            const formData = new FormData();
+            formData.append("profileImage", file);
+            const response = await api.post("/user/upload", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.status === 200) {
+                showSuccess("Image updated");
+            } else {
+                showError("Failed to upload image");
+            }
 
         }
+        catch (error) {
+            console.log("Error uploading image", error);
+            showError("Error uploading image");
+        }
+        finally {
+            setUploading(false);
+        }
+
+    }
+
+    // handle image input
+    const handleFileInputClick = () => {
+        document.getElementById('profile-image-upload').click();
     };
 
+    const profileImageUrl = imagePreview || (profileImage ? `${process.env.REACT_APP_API_BASE_URL}${profileImage}` : `${process.env.REACT_APP_API_BASE_URL}/uploads/default-profile-picture.jpg`);
 
+    console.log(profileImageUrl);
     return (
         <Card sx={{ maxWidth: 400, margin: '20px auto', padding: 3, borderRadius: 2, boxShadow: 3 }}>
             {/* Profile Header */}
             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            {/* Avatar Display */}
-            <Avatar 
-                alt="User Image"
-                src={imagePreview || 'default-image-url'} // Use the preview image or a default URL
-                sx={{ bgcolor: 'primary.main', width: 64, height: 64 }}
-            />
-            
-            {/* Image Upload Button */}
-            <input
-                type="file"
-                accept="image/*"
-                id="profile-image-upload"
-                style={{ display: 'none' }}
-                onChange={handleImageChange}
-            />
-            <label htmlFor="profile-image-upload">
-                <Button component="span" variant="outlined" color="primary" sx={{ mt: 2 }}>
-                    Update Profile Picture
-                </Button>
-            </label>
+                {/* Avatar Display */}
+                <Avatar
+                    src={profileImageUrl}
+                    sx={{ bgcolor: 'primary.main', width: 64, height: 64 }}
+                />
+
+                {/* Image Upload Button */}
+                <input
+                    type="file"
+                    accept="image/*"
+                    id="profile-image-upload"
+                    style={{ display: 'none' }}
+                    onChange={handleImageUpload}
+                />
+                <label htmlFor="profile-image-upload">
+                    {/* Upload Button */}
+                    <Button
+                        onClick={handleFileInputClick}
+                        variant="contained"
+                        color="primary"
+                        sx={{ mt: 2 }}
+                        disabled={uploading}
+                    >
+                        {uploading ? 'Uploading...' : 'Upload Profile Picture'}
+                    </Button>
+                </label>
+
                 <Box sx={{ marginLeft: 2 }}>
                     <Typography variant="h6" component="div" sx={{ fontWeight: 'bold' }}>
                         {name}

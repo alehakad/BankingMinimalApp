@@ -5,7 +5,9 @@ const storage = multer.diskStorage({
         cb(null, 'uploads/'); // folder to store imaeg
     },
     filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname)); // timestamp added to file name
+        const originalName = file.originalname;
+        const fileExt = originalName.split('.').pop();
+        cb(null, Date.now() + '-' + file.fieldname + '.' + fileExt); // timestamp added to file name
     }
 });
 

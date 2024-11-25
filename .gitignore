@@ -99,6 +99,8 @@ backend/.env.local
 backend/.cache
 backend/.parcel-cache
 
+backend/uploads
+
 # Next.js build output
 backend/.next
 backend/out
