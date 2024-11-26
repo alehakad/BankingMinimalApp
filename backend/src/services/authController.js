@@ -36,7 +36,7 @@ const registerUser = async (req, res) => {
     // create user with random amount
     const amount = Math.floor(Math.random() * 10000);
     const newUser = new User({ email, phone, password, amount, name });
-    newUser.save();
+    await newUser.save();
 
     // generate otp
     const otp = generateOtp();

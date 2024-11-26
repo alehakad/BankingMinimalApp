@@ -5,7 +5,7 @@ import docsRouter from './routes/docs.js';
 import loginRouter from './routes/login.js';
 import regRouter from './routes/register.js';
 import userRouter from './routes/user.js';
-import connectDB from './models/dbConnect.js';
+import { connectDB } from './models/dbConnect.js';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 import path from 'path';
@@ -16,10 +16,6 @@ import { fileURLToPath } from 'url';
 dotenv.config();
 
 const app = express();
-
-// connect to datebase
-connectDB();
-
 
 // add helmet security middleware
 app.use(helmet({ crossOriginResourcePolicy: false, }));
@@ -57,9 +53,16 @@ app.get('/', (req, res) => {
 
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+
+connectDB();
+
+if (process.env.NODE_ENV !== 'test') {
+  // connect to datebase
+
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
 
 
 export default app;
