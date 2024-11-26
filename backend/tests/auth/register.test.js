@@ -1,9 +1,8 @@
 import request from 'supertest';
 import app from "../../src/app";
 import User from "../../src/models/userSchema";
-import generateOtp from "../../src/utils/genrateOtp";
 
-// TODO: mock OTP generation and usersOtp
+
 
 describe("POST /register", () => {
   test('register new user successfully', async () => {
@@ -75,11 +74,8 @@ describe("POST /register", () => {
     expect(response.body.error).toBeDefined();
   });
 
-
-
 });
 
-describe()
 
 
 

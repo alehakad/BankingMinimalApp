@@ -1,5 +1,5 @@
 import generateToken from "../utils/generateToken.js";
-import generateOtp from '../utils/genrateOtp.js';
+import generateOtp from '../utils/generateOtp.js';
 import User from '../models/userSchema.js';
 
 

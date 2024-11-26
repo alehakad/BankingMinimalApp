@@ -30,4 +30,6 @@ export default {
 
     // Add any other Jest configurations you may need
     verbose: true,  // Show individual test results in the console
+
+    transform: {}
 };
