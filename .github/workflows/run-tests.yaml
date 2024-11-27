@@ -22,6 +22,10 @@ jobs:
         run: |
           cd backend
           npm install
+
+      - name: Create .env file
+        run: |
+          echo "SECRET_KEY=${{ secrets.SECRET_KEY }}" >> backend/.env
       
       - name: Run Jest API tests
         run: |
