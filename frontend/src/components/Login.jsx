@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from 'react-router-dom';
 import { useNotification } from '../context/NotificationContext.js';
 import api from '../utils/axiosClient';
+import useAuth from "../hooks/useAuth";
 
 const Login = () => {
     const [email, setEmail] = useState("")
@@ -14,6 +15,12 @@ const Login = () => {
     const { showError } = useNotification();
 
     const navigate = useNavigate();
+
+    const userData = useAuth();
+
+    if (userData) {
+        return <div>Redirecting to Dashboard...</div>;
+    }
 
     const handleSubmit = (event) => {
         event.preventDefault()

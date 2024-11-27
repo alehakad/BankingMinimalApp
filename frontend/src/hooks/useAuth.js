@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import api from "../utils/axiosClient";
+import { useNavigate, useLocation } from "react-router-dom";
 
 
 // get user data once
@@ -8,6 +8,7 @@ const useAuth = () => {
 
     const [userData, setUserData] = useState(null);
     const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -21,17 +22,27 @@ const useAuth = () => {
 
                 if (response && response.data && response.data.user) {
                     setUserData(response.data.user);
+                    if (location.pathname === '/login' || location.pathname === '/register') {
+                        navigate('/')
+                    }
                 } else {
                     console.error("User data is missing or invalid");
-                    navigate("/login");
+                    handleRedirection();
                 }
             } catch (error) {
                 console.error("Error fetching user data or token validation:", error);
-                navigate("/login");
+                handleRedirection();
             }
-        }
+        };
+
+        const handleRedirection = () => {
+            if (location.pathname !== '/login' && location.pathname !== '/register') {
+                navigate('/login');
+            }
+        };
+
         fetchUserData();
-    }, [navigate]);
+    }, [navigate, location.pathname]);
 
     return userData;
 }

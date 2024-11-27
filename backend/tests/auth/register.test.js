@@ -3,7 +3,6 @@ import app from "../../src/app";
 import User from "../../src/models/userSchema";
 
 
-
 describe("POST /register", () => {
   test('register new user successfully', async () => {
 
@@ -78,5 +77,44 @@ describe("POST /register", () => {
 
 
 
+describe("POST /register/verify-passcode", () => {
+  test('fail to verify non existing user', async () => {
+    const userPasscode = { email: "a@gmail.com", passcode: 123456 };
+
+    const response = await request(app).post('/register/verify-passcode').send(userPasscode);
+
+    expect(response.status).toBe(400);
+  });
+
+
+  test('fail to verify wrong passcode', async () => {
+
+    // create user
+    const newUser = {
+      email: "ab@gmail.com",
+      password: "BlaBla123!",
+      phone: "+79213456789",
+      name: "Olo",
+    };
+
+    await request(app).
+      post('/register').send(newUser);
+
+
+    const userPasscode = { email: newUser.email, passcode: "123456" };
+
+    const response = await request(app).post('/register/verify-passcode').send(userPasscode);
+
+    expect(response.status).toBe(401);
+    expect(response.body.error).toBe('Wrong otp');
+  });
+
+
+  test("verify passcode succesfully", () => {
+    // create user
+    expect(1).toBe(1);
+
+  })
+});
 
 

@@ -4,9 +4,10 @@ import { Link } from "react-router-dom";
 import OtpDialog from './OtpDialog';
 import { useNotification } from '../context/NotificationContext.js';
 import api from "../utils/axiosClient.js";
-
+import useAuth from "../hooks/useAuth";
 
 const RegisterForm = () => {
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [phone, setPhone] = useState('');
@@ -14,6 +15,13 @@ const RegisterForm = () => {
     const [isOtpDialogOpen, setIsOtpDialogOpen] = useState(false);
 
     const { showSuccess, showError } = useNotification();
+
+
+    const userData = useAuth();
+
+    if (userData) {
+        return <div>Redirecting to Dashboard...</div>;
+    }
 
     const handleOtpDialogOpen = () => setIsOtpDialogOpen(true);
     const handleOtpDialogClose = () => setIsOtpDialogOpen(false);
