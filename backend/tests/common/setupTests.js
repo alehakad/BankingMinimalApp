@@ -21,12 +21,7 @@ beforeAll(async () => {
 
 // clear database after each test
 afterEach(async () => {
-    const collections = Object.keys(mongoose.connection.collections);
-    // Iterate through each collection and clear its contents
-    for (const collectionName of collections) {
-        const collection = mongoose.connection.collections[collectionName];
-        await collection.deleteMany(); // Deletes all documents in the collection
-    }
+   await User.deleteMany();
 });
 
 afterAll(async () => {
