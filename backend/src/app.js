@@ -10,10 +10,10 @@ import dotenv from 'dotenv';
 import morgan from 'morgan';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import redisClient from "./models/redisConnect.js";
 
 // load .env variables
 dotenv.config();
+import redisClient from "./models/redisConnect.js";
 
 const app = express();
 
