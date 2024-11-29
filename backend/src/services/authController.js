@@ -1,10 +1,7 @@
 import generateToken from "../utils/generateToken.js";
-import generateOtp from '../utils/generateOtp.js';
+import { generateOtp, storeOtp, validateOtp } from '../utils/checkOtp.js';
 import User from '../models/userSchema.js';
 
-
-// TODO: save otp per user in redis
-const usersOtp = new Map();
 
 const loginUser = async (req, res) => {
     const { email, password } = req.body;
@@ -43,7 +40,8 @@ const registerUser = async (req, res) => {
     // send otp
     console.log(`sending otp ${otp} to email ${email}`)
 
-    usersOtp.set(email, otp);
+    // save otp in redis
+    storeOtp(newUser._id, otp);
 
     return res.status(201).json({ message: 'OTP sent successfully' });
 
@@ -57,7 +55,7 @@ const verifyOtp = async (req, res) => {
     if (!currentUser) return res.status(401).json({ error: 'Invalid credentials' });
 
     // check otp
-    if (!passcode || passcode != usersOtp.get(email)) {
+    if (!passcode || !validateOtp(currentUser._id, passcode)) {
         return res.status(401).json({ error: 'Wrong otp' });
     }
     // change user verified flag

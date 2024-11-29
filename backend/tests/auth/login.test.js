@@ -80,7 +80,7 @@ describe("POST /login", () => {
     await verifyOtp(newUser.email, "123456");
 
     // Attempt login
-    const response = await loginUser(userCredentials.email, userCredentials.password);  // Using helper function
+    const response = await loginUser(userCredentials.email, userCredentials.password);
 
     expect(response.status).toBe(200);
     expect(response.body.token).toBeDefined();

@@ -10,7 +10,7 @@ import dotenv from 'dotenv';
 import morgan from 'morgan';
 import path from 'path';
 import { fileURLToPath } from 'url';
-
+import redisClient from "./models/redisConnect.js";
 
 // load .env variables
 dotenv.config();
@@ -54,7 +54,11 @@ app.get('/', (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 
+// connect to MongoDB
 connectDB();
+
+// connect to redis
+await redisClient.connect();
 
 if (process.env.NODE_ENV !== 'test') {
   // connect to datebase

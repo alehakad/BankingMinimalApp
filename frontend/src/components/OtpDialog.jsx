@@ -30,7 +30,7 @@ const OtpDialog = ({ open, handleClose, email }) => {
             const formData = new FormData(event.currentTarget);
             const formJson = Object.fromEntries((formData).entries());
             const passcode = formJson.passcode;
-            console.log(passcode);
+            console.log(email, passcode);
             // send passcode to backend
             api.post('register/verify-passcode', { email, passcode })
               .then((response) => {
