@@ -55,7 +55,7 @@ const verifyOtp = async (req, res) => {
     if (!currentUser) return res.status(401).json({ error: 'Invalid credentials' });
 
     // check otp
-    if (!passcode || !validateOtp(currentUser._id, passcode)) {
+    if (!passcode || !(await validateOtp(currentUser._id, passcode))) {
         return res.status(401).json({ error: 'Wrong otp' });
     }
     // change user verified flag
