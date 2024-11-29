@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import app from "../../src/app";
 import User from "../../src/models/userSchema";
 import { disconnectDB } from "../../src/models/dbConnect";
+import redisClient from "../../src/models/redisConnect";
 
 
 // load env variables
@@ -21,10 +22,12 @@ beforeAll(async () => {
 
 // clear database after each test
 afterEach(async () => {
-   await User.deleteMany();
+    await User.deleteMany();
 });
 
 afterAll(async () => {
+    console.log("Disconnect from dbs");
+    await redisClient.disconnect();
     await disconnectDB();
     server.close(); // close the server
 });

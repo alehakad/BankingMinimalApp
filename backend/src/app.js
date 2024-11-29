@@ -5,7 +5,7 @@ import docsRouter from './routes/docs.js';
 import loginRouter from './routes/login.js';
 import regRouter from './routes/register.js';
 import userRouter from './routes/user.js';
-import { connectDB } from './models/dbConnect.js';
+import { connectDB, disconnectDB } from './models/dbConnect.js';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
 import path from 'path';
@@ -55,7 +55,7 @@ app.get('/', (req, res) => {
 const PORT = process.env.PORT || 5000;
 
 // connect to MongoDB
-connectDB();
+await connectDB();
 
 // connect to redis
 await redisClient.connect();
@@ -68,5 +68,27 @@ if (process.env.NODE_ENV !== 'test') {
   });
 }
 
+
+async function shutdown() {
+  console.log('Shutting down gracefully...');
+
+  if (process.env.NODE_ENV !== 'test') {
+    if (redisClient) {
+      console.log('Closing Redis connection...');
+      await redisClient.quit();
+    }
+
+
+    console.log("Closing DB connection");
+    await disconnectDB();
+  }
+
+  console.log('All connections closed.');
+  process.exit(0);
+}
+
+// Handle termination signals
+process.on('SIGINT', shutdown);
+process.on('SIGTERM', shutdown);
 
 export default app;
