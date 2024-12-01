@@ -11,12 +11,28 @@ import dotenv from 'dotenv';
 import morgan from 'morgan';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import http from "http";
+import { Server } from "socket.io";
 
 // load .env variables
 dotenv.config();
 import redisClient from "./models/redisConnect.js";
 
+// create app
 const app = express();
+// create socket io server
+const server = http.createServer(app);
+const io = new Server(server);
+
+
+// Socket.IO event handlers
+io.on('connection', (socket) => {
+  console.log(`User connected: ${socket.id}`);
+
+  socket.on('disconnect', () => {
+    console.log(`User disconnected: ${socket.id}`);
+  });
+});
 
 // add helmet security middleware
 app.use(helmet({ crossOriginResourcePolicy: false, }));
@@ -64,12 +80,10 @@ await redisClient.connect();
 
 if (process.env.NODE_ENV !== 'test') {
   // connect to datebase
-
-  app.listen(PORT, () => {
+  server.listen(3000, () => {
     console.log(`Server is running on port ${PORT}`);
   });
 }
-
 
 async function shutdown() {
   console.log('Shutting down gracefully...');
