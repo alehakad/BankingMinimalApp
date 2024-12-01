@@ -11,6 +11,9 @@ import {
     Box,
     Button
 } from '@mui/material';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+
 import { useNotification } from '../context/NotificationContext';
 import api from "../utils/axiosClient.js";
 
@@ -135,26 +138,39 @@ const UserProfileCard = ({ user }) => {
                 </Typography>
                 {transactions.length > 0 ?
                     <List>
-                        {transactions.map((transaction, index) => (
-                            <React.Fragment key={index}>
-                                <ListItem disablePadding>
-                                    <ListItemText
-                                        primary={transaction.receiver}
-                                        secondary={
-                                            <>
-                                                <Typography variant="body2" color="text.secondary">
-                                                    Amount: ${transaction.amount.toFixed(2)}
-                                                </Typography>
-                                                <Typography variant="body2" color="text.secondary">
-                                                    Date: {transaction.date}
-                                                </Typography>
-                                            </>
-                                        }
-                                    />
-                                </ListItem>
-                                {index < transactions.length - 1 && <Divider />}
-                            </React.Fragment>
-                        ))}
+                        {transactions.map((transaction, index) => {
+                            const isReceiver = transaction.receiver === email;
+
+                            return (
+                                <React.Fragment key={index}>
+                                    <ListItem disablePadding>
+                                        <ListItemText
+                                            primary={
+                                                <>
+                                                    {isReceiver ? (
+                                                        <AddCircleOutlineIcon sx={{ color: 'green', marginRight: 1 }} />
+                                                    ) : (
+                                                        <RemoveCircleOutlineIcon sx={{ color: 'red', marginRight: 1 }} />
+                                                    )}
+                                                    {isReceiver ? transaction.sender : transaction.receiver}
+                                                </>
+                                            }
+                                            secondary={
+                                                <>
+                                                    <Typography variant="body2" color="text.secondary">
+                                                        Amount: ${transaction.amount.toFixed(2)}
+                                                    </Typography>
+                                                    <Typography variant="body2" color="text.secondary">
+                                                        Date: {transaction.date}
+                                                    </Typography>
+                                                </>
+                                            }
+                                        />
+                                    </ListItem>
+                                    {index < transactions.length - 1 && <Divider />}
+                                </React.Fragment>
+                            );
+                        })}
                     </List>
                     : <Typography variant="body2" color="text.secondary">No transactions yet</Typography>}
             </CardContent>
