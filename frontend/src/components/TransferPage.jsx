@@ -24,7 +24,8 @@ const TransferPage = () => {
         }
         api.get('/users/', { headers: { Authorization: `Bearer ${token}` } })
             .then(response => {
-                setEmails(response.data.emails);
+                const filteredEmails = response.data.emails.filter(email => email !== userData.email);
+                setEmails(filteredEmails);
             })
             .catch(error => {
                 console.error('Error fetching emails:', error);

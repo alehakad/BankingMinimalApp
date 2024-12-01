@@ -24,6 +24,9 @@ const addTransaction = async (req, res) => {
         if (!senderUser) return res.status(401).json({ error: 'No user with such email' });
 
         const { receiver, amount } = req.body.transaction;
+
+        // can't send money to yourself
+        if (userEmail === receiver) return res.status(400).json({ error: 'Cannot send money to yourself' });
         // reciever
         const receiverUser = await User.findByEmailOrPhone(receiver);
         if (!receiverUser) return res.status(401).json({ error: 'No reciever with such email' });
