@@ -1,27 +1,45 @@
 import React, { useState } from "react";
 import useAuth from "../hooks/useAuth";
-import { TextField, Button, Card, CardContent, Typography, Box, Divider } from "@mui/material";
+import { TextField, Button, Card, CardContent, Typography, Box, Divider, MenuItem, Select, InputLabel, FormControl } from "@mui/material";
 import { useNotification } from '../context/NotificationContext.js';
 import api from "../utils/axiosClient.js";
+import { useEffect } from "react";
 
 
 const TransferPage = () => {
     const userData = useAuth();
 
+    const [emails, setEmails] = useState([]);
     const [receiverEmail, setReceiverEmail] = useState("");
     const [amount, setAmount] = useState(0.0);
 
     const { showSuccess, showError } = useNotification();
 
+    const token = localStorage.getItem('jwtToken');
+
+    // fetch list of all verified users emails
+    useEffect(() => {
+        if (!userData) {
+            return;
+        }
+        api.get('/users/', { headers: { Authorization: `Bearer ${token}` } })
+            .then(response => {
+                setEmails(response.data.emails);
+            })
+            .catch(error => {
+                console.error('Error fetching emails:', error);
+            });
+    }, [userData, token]);
+
     if (!userData) {
         return <div>Loading...</div>;
     }
 
+
     function sendMoney(event) {
         event.preventDefault();
         console.log(receiverEmail, amount);
-        const token = localStorage.getItem('jwtToken');
-        api.patch('/user/transactions', {
+        api.patch('/me/transactions', {
 
             transaction: { receiver: receiverEmail, amount }
         },
@@ -45,7 +63,11 @@ const TransferPage = () => {
                     showError(error.message);
                 }
             });
-    }
+    };
+
+    const handleChange = (event) => {
+        setReceiverEmail(event.target.value);
+    };
 
     return (
         <Card
@@ -78,18 +100,24 @@ const TransferPage = () => {
                     <Typography variant="subtitle1" sx={{ fontWeight: 'bold', marginBottom: 1 }}>
                         Receiver Info
                     </Typography>
-                    <TextField
-                        type="email"
-                        variant="outlined"
-                        color="primary"
-                        label="Receiver Email"
-                        onChange={(e) => setReceiverEmail(e.target.value)}
-                        value={receiverEmail}
-                        fullWidth
-                        required
-                        sx={{ marginBottom: 3 }}
-                    />
-
+                    {/* Dropdown to select receiver email */}
+                    <FormControl fullWidth required sx={{ marginBottom: 3 }}>
+                        <InputLabel id="receiver-email-label">Receiver Email</InputLabel>
+                        <Select
+                            labelId="receiver-email-label"
+                            id="receiver-email"
+                            value={receiverEmail}
+                            label="Receiver Email"
+                            onChange={handleChange}
+                        >
+                            {/* Render a MenuItem for each email */}
+                            {emails.map((email, index) => (
+                                <MenuItem key={index} value={email}>
+                                    {email}
+                                </MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
                     {/* Transfer Amount */}
                     <Typography variant="subtitle1" sx={{ fontWeight: 'bold', marginBottom: 1 }}>
                         Amount
@@ -98,12 +126,21 @@ const TransferPage = () => {
                         label="Enter Amount"
                         variant="outlined"
                         value={amount}
-                        onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            // Check if the value is a valid integer
+                            if (/^\d*$/.test(value)) {
+                                setAmount(value);  // Update only if the value is a valid integer
+                            }
+                        }}
                         fullWidth
-                        type="number"
-                        inputProps={{
-                            min: "0",
-                            step: "0.01",
+                        type="text"  // Use text type to handle custom validation
+                        slotProps={{
+                            htmlInput: {
+                                inputMode: 'numeric',  // Sets numeric input mode for mobile devices
+                                min: "0",
+                                step: "1",  // Only allow integer steps
+                            },
                         }}
                         required
                         sx={{ marginBottom: 3 }}

@@ -245,7 +245,7 @@ paths:
         '404':
           description: User not found
 
-  /user/home:
+  /me/home:
     get:
       summary: Serves dashboard page
       tags:
@@ -265,7 +265,7 @@ paths:
     post:
       summary: Verifies the passcode entered by the user
       tags:
-        - dashboard
+        - auth
       requestBody:
         required: true
         content:
@@ -299,7 +299,7 @@ paths:
         '500':
           description: Internal server error – Error occurred during passcode verification
 
-  /user/transactions:
+  /me/transactions:
     patch:
       summary: Add transaction to the list of user transactions
       tags:

@@ -9,7 +9,7 @@ describe("GET /dashboard", () => {
         const invalidToken = "invalidtoken";
 
         const response = await request(app)
-            .get("/user/home")
+            .get("/me/home")
             .set("Authorization", `Bearer ${invalidToken}`);
 
         expect(response.status).toBe(401);
@@ -38,7 +38,7 @@ describe("GET /dashboard", () => {
         const token = loginResponse.body.token;
 
         const response = await request(app)
-            .get("/user/home")
+            .get("/me/home")
             .set("Authorization", `Bearer ${token}`);
 
         expect(response.status).toBe(200);

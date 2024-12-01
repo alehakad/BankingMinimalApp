@@ -16,7 +16,7 @@ const useAuth = () => {
             console.log(token);
             try {
 
-                const response = await api.get('/user/home', {
+                const response = await api.get('/me/home', {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 

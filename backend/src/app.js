@@ -4,7 +4,8 @@ import cors from 'cors';
 import docsRouter from './routes/docs.js';
 import loginRouter from './routes/login.js';
 import regRouter from './routes/register.js';
-import userRouter from './routes/user.js';
+import dashboardRouter from './routes/dashboard.js';
+import usersRouter from './routes/users.js';
 import { connectDB, disconnectDB } from './models/dbConnect.js';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
@@ -44,7 +45,8 @@ app.use(express.json());
 app.use('/docs', docsRouter);
 app.use('/login', loginRouter);
 app.use('/register', regRouter);
-app.use('/user', userRouter);
+app.use('/me', dashboardRouter);
+app.use('/users', usersRouter);
 
 app.get('/', (req, res) => {
   res.send('Welcome to bank app');

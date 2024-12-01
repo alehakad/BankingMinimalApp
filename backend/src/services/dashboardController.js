@@ -33,24 +33,28 @@ const addTransaction = async (req, res) => {
         const session = await mongoose.startSession();
 
         const transaction = { sender: senderUser._id, receiver: receiverUser._id, amount };
-        await session.withTransaction(async (session) => {
-            // check balance
-            if (senderUser.amount < amount) return res.status(403).json({ error: 'Insufficient balance' });
-            // add transaction to users lists
+        if (senderUser.amount < amount) {
+            return res.status(403).json({ error: 'Insufficient balance' });
+        }
 
-            senderUser.transactions.push(transaction);
-            receiverUser.transactions.push(transaction);
+        try {
+            await session.withTransaction(async () => {
 
-            // change balance
-            senderUser.amount -= amount;
-            receiverUser.amount += amount;
+                senderUser.transactions.push(transaction);
+                receiverUser.transactions.push(transaction);
 
-            await senderUser.save();
-            await receiverUser.save();
-        })
+                senderUser.amount -= amount;
+                receiverUser.amount += amount;
 
+                await senderUser.save();
+                await receiverUser.save();
+            });
 
-        return res.status(200).json({ message: 'Transaction completed', transaction });
+            return res.status(200).json({ message: 'Transaction completed', transaction });
+
+        } catch (error) {
+            return res.status(500).json({ error: 'An error occurred during the transaction' });
+        }
     }
     return res.status(401).json({ error: 'Unauthorized: No email found in token' });
 }

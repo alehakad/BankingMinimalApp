@@ -42,7 +42,7 @@ const UserProfileCard = ({ user }) => {
             // create form data
             const formData = new FormData();
             formData.append("profileImage", file);
-            const response = await api.post("/user/upload", formData, {
+            const response = await api.post("/me/upload", formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${token}`
