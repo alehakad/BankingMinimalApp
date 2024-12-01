@@ -17,8 +17,12 @@ const loginUser = async (req, res) => {
 
     // check user verified
     if (!existingUser.verified) {
+        const otp = generateOtp();
         // send otp
         console.log(`sending otp ${otp} to email ${email}`);
+        // save otp in redis
+        storeOtp(existingUser._id, otp);
+
         return res.status(403).json({ error: 'Account not verified' });
     };
 
