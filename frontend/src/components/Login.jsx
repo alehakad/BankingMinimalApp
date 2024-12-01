@@ -5,18 +5,23 @@ import { useNavigate } from 'react-router-dom';
 import { useNotification } from '../context/NotificationContext.js';
 import api from '../utils/axiosClient';
 import useAuth from "../hooks/useAuth";
+import OtpDialog from './OtpDialog';
 
 const Login = () => {
-    const [email, setEmail] = useState("")
-    const [password, setPassword] = useState("")
-    const [emailError, setEmailError] = useState(false)
-    const [passwordError, setPasswordError] = useState(false)
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [emailError, setEmailError] = useState(false);
+    const [passwordError, setPasswordError] = useState(false);
+    const [isOtpDialogOpen, setIsOtpDialogOpen] = useState(false);
 
     const { showError } = useNotification();
 
     const navigate = useNavigate();
 
     const userData = useAuth();
+
+    const handleOtpDialogClose = () => setIsOtpDialogOpen(false);
+    const handleOtpDialogOpen = () => setIsOtpDialogOpen(true);
 
     if (userData) {
         return <div>Redirecting to Dashboard...</div>;
@@ -52,8 +57,13 @@ const Login = () => {
                 navigate('/');
             })
             .catch((error) => {
+                // show otp dialog
+                if (error.status === 403) {
+                    console.log("Show OTP dialog");
+                    handleOtpDialogOpen();
+                }
                 // display errors
-                if (error.response) {
+                else if (error.response) {
                     console.error('Error Status:', error.response.status);
                     console.error('Error Data:', error.response.data);
                     showError(error.response.data.error);
@@ -71,6 +81,8 @@ const Login = () => {
 
     return (
         <React.Fragment>
+            <OtpDialog open={isOtpDialogOpen} handleClose={handleOtpDialogClose} email={email} />
+
             <form autoComplete="off" onSubmit={handleSubmit}>
                 <h2>Login</h2>
                 <TextField

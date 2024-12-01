@@ -16,7 +16,6 @@ const RegisterForm = () => {
 
     const { showSuccess, showError } = useNotification();
 
-
     const userData = useAuth();
 
     if (userData) {

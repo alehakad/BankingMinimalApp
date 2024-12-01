@@ -14,8 +14,6 @@ import { useNotification } from '../context/NotificationContext.js';
 const OtpDialog = ({ open, handleClose, email }) => {
 
   const { showSuccess, showError } = useNotification();
-
-  const resendCode = () => { console.log("resend otp code"); };
   const navigate = useNavigate();
 
   return (
@@ -68,7 +66,6 @@ const OtpDialog = ({ open, handleClose, email }) => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={resendCode}>Resend</Button>
           <Button type="submit">Verify</Button>
         </DialogActions>
       </Dialog>

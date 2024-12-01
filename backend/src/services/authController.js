@@ -10,13 +10,17 @@ const loginUser = async (req, res) => {
     const existingUser = await User.findByEmailOrPhone(email);
     if (!existingUser) return res.status(401).json({ error: 'Invalid credentials' });
 
-    // check user verified
-    if (!existingUser.verified) return res.status(403).json({ error: 'Account not verified' });
-
     const checkPassword = await existingUser.comparePassword(password);
     if (!checkPassword) {
         return res.status(401).json({ error: 'Wrong password or email' });
     }
+
+    // check user verified
+    if (!existingUser.verified) {
+        // send otp
+        console.log(`sending otp ${otp} to email ${email}`);
+        return res.status(403).json({ error: 'Account not verified' });
+    };
 
     const token = generateToken(existingUser.email);
     return res.status(200).json({ token });
