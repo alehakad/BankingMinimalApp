@@ -1,4 +1,4 @@
-import { React, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { Button, Box, Typography } from '@mui/material';
 import UserProfileCard from "./UserProfileCard";
@@ -11,40 +11,43 @@ const Dashboard = () => {
     const userData = useAuth();
     const navigate = useNavigate();
 
+
     const { showInfo } = useNotification();
     const [socket, setSocket] = useState(null);
 
     // connect to websocker
     useEffect(() => {
-        const userId = userData._id;
-        const newSocket = io(process.env.REACT_APP_API_BASE_URL, {
-            query: { userId }
-        });
+        if (userData) {
+            const userId = userData._id;
 
-        setSocket(newSocket);
+            const newSocket = io(process.env.REACT_APP_API_BASE_URL, {
+                query: { userId }
+            });
 
-        newSocket.on('connect', () => {
-            console.log('Connected to WebSocket with socket ID: ', socket.id);
-        });
+            setSocket(newSocket);
 
-        // show new transaction event
-        newSocket.on('new-transaction', (transaction) => {
-            console.log('New transaction received');
+            newSocket.on('connect', () => {
+                console.log('Connected to WebSocket with socket ID: ', newSocket.id);
+            });
 
-            showInfo("New money transfer received");
-        });
+            // show new transaction event
+            newSocket.on('new-transaction', (transaction) => {
+                console.log('New transaction received');
 
-        newSocket.on('disconnect', () => {
-            console.log('Disconnected from WebSocket');
-        });
+                showInfo("New money transfer received");
+            });
 
-        return () => {
-            if (newSocket) {
-                newSocket.disconnect();
+            newSocket.on('disconnect', () => {
+                console.log('Disconnected from WebSocket');
+            });
+
+            return () => {
+                if (newSocket) {
+                    newSocket.disconnect();
+                }
             }
         }
-
-    });
+    }, [showInfo, userData]);
 
     const logout = () => {
         // delete jwt

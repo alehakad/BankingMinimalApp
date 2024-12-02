@@ -5,7 +5,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 // get user data once
 const useAuth = () => {
-
     const [userData, setUserData] = useState(null);
     const navigate = useNavigate();
     const location = useLocation();

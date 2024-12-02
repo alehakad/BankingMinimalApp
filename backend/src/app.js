@@ -18,12 +18,16 @@ import { initSocket } from './utils/webSocketSetup.js';
 dotenv.config();
 import redisClient from "./models/redisConnect.js";
 
+
+const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
+const __dirname = path.dirname(__filename); // get the name of the directory
+
 // create app
 const app = express();
 const server = http.createServer(app);
 
 // init socketio
-initSocket(server);
+// initSocket(server);
 
 
 // add helmet security middleware
@@ -41,8 +45,7 @@ app.use(cors({
 // logging middeware
 app.use(morgan('combined'));
 
-const __filename = fileURLToPath(import.meta.url); // get the resolved path to the file
-const __dirname = path.dirname(__filename); // get the name of the directory
+
 // middleware to serve static images
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
@@ -72,7 +75,7 @@ await redisClient.connect();
 
 if (process.env.NODE_ENV !== 'test') {
   // connect to datebase
-  server.listen(3000, () => {
+  server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
 }

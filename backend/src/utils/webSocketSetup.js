@@ -3,7 +3,7 @@ import { Server } from "socket.io";
 // create socket io server
 const socketMap = new Map();
 
-const initSocket = () => {
+const initSocket = (server) => {
     const io = new Server(server);
     console.log("Initialize SocketIO");
     // Socket.IO event handlers
