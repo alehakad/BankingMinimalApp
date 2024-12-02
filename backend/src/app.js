@@ -12,7 +12,7 @@ import morgan from 'morgan';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import http from "http";
-import { Server } from "socket.io";
+import { initSocket } from './utils/webSocketSetup.js';
 
 // load .env variables
 dotenv.config();
@@ -20,19 +20,11 @@ import redisClient from "./models/redisConnect.js";
 
 // create app
 const app = express();
-// create socket io server
 const server = http.createServer(app);
-const io = new Server(server);
 
+// init socketio
+initSocket(server);
 
-// Socket.IO event handlers
-io.on('connection', (socket) => {
-  console.log(`User connected: ${socket.id}`);
-
-  socket.on('disconnect', () => {
-    console.log(`User disconnected: ${socket.id}`);
-  });
-});
 
 // add helmet security middleware
 app.use(helmet({ crossOriginResourcePolicy: false, }));

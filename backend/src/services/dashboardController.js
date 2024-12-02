@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import User from '../models/userSchema.js';
 import { getUserFolderPath } from '../utils/imageParser.js';
+import { updateReceiver } from '../utils/webSocketSetup.js';
 
 const getDashboard = async (req, res) => {
     if (req.auth && req.auth.userEmail) {
@@ -9,8 +10,8 @@ const getDashboard = async (req, res) => {
         const currentUser = await User.findByEmailOrPhone(userEmail);
         if (!currentUser) return res.status(401).json({ error: 'No user with such email' });
         // exclude password
-        const { email, phone, amount, transactions, name, profileImage } = currentUser.toObject();
-        return res.status(200).json({ message: `Welcome to dashboard ${userEmail}`, user: { email, phone, amount, transactions, name, profileImage } });
+        const { email, phone, amount, transactions, name, profileImage, _id } = currentUser.toObject();
+        return res.status(200).json({ message: `Welcome to dashboard ${userEmail}`, user: { email, phone, amount, transactions, name, profileImage, _id } });
     }
     return res.status(401).json({ error: 'Unauthorized: No email found in token' });
 };
@@ -52,7 +53,8 @@ const addTransaction = async (req, res) => {
                 await senderUser.save();
                 await receiverUser.save();
             });
-
+            // send emit to other client socket if he is online
+            await updateReceiver(receiverUser._id, transaction);
             return res.status(200).json({ message: 'Transaction completed', transaction });
 
         } catch (error) {
