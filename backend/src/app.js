@@ -27,7 +27,7 @@ const app = express();
 const server = http.createServer(app);
 
 // init socketio
-// initSocket(server);
+initSocket(server);
 
 
 // add helmet security middleware

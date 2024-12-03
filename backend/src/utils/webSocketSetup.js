@@ -4,13 +4,20 @@ import { Server } from "socket.io";
 const socketMap = new Map();
 
 const initSocket = (server) => {
-    const io = new Server(server);
+    // create Socket.io server with cors
+    const io = new Server(server, {
+        cors: {
+            origin: "http://localhost:3000",
+            methods: ["GET", "POST"]
+        }
+    });
+
     console.log("Initialize SocketIO");
     // Socket.IO event handlers
     io.on('connection', (socket) => {
         console.log(`User connected: ${socket.id}`);
         // get user id from query
-        const userId = socket.handshake.query.userId;
+        const userId = socket.handshake.auth.userId;
 
         if (userId) {
             socketMap.set(userId, socket);

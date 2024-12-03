@@ -36,7 +36,7 @@ const addTransaction = async (req, res) => {
         // start session
         const session = await mongoose.startSession();
 
-        const transaction = { sender: senderUser._id, receiver: receiverUser._id, amount };
+        const transaction = { sender: { _id: senderUser._id, email: senderUser.email }, receiver: { _id: receiverUser._id, email: receiverUser.email }, amount: parseFloat(amount), date: new Date() };
         if (senderUser.amount < amount) {
             return res.status(403).json({ error: 'Insufficient balance' });
         }
@@ -54,7 +54,7 @@ const addTransaction = async (req, res) => {
                 await receiverUser.save();
             });
             // send emit to other client socket if he is online
-            await updateReceiver(receiverUser._id, transaction);
+            await updateReceiver(receiverUser._id.toString(), transaction);
             return res.status(200).json({ message: 'Transaction completed', transaction });
 
         } catch (error) {

@@ -11,6 +11,7 @@ const transactionSchema = new Schema({
     date: { type: Date, default: Date.now },
 });
 
+
 const userSchema = new Schema({
     email: { type: String, required: true, unique: true, trim: true },
     phone: { type: String, required: true, unique: true },
@@ -44,7 +45,9 @@ userSchema.methods.comparePassword = async function (passedPassword) {
 }
 
 userSchema.statics.findByEmailOrPhone = async function (email, phone) {
-    const user = await this.findOne({ $or: [{ email }, { phone }] });
+    const user = await this.findOne({ $or: [{ email }, { phone }] })
+        .populate({ path: 'transactions.sender', select: 'email' })
+        .populate({ path: 'transactions.receiver', select: 'email' });
     return user;
 }
 

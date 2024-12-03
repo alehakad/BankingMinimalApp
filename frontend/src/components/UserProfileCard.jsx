@@ -139,7 +139,7 @@ const UserProfileCard = ({ user }) => {
                 {transactions.length > 0 ?
                     <List>
                         {transactions.map((transaction, index) => {
-                            const isReceiver = transaction.receiver === email;
+                            const isReceiver = transaction.receiver.email === email;
 
                             return (
                                 <React.Fragment key={index}>
@@ -152,7 +152,7 @@ const UserProfileCard = ({ user }) => {
                                                     ) : (
                                                         <RemoveCircleOutlineIcon sx={{ color: 'red', marginRight: 1 }} />
                                                     )}
-                                                    {isReceiver ? transaction.sender : transaction.receiver}
+                                                    {isReceiver ? transaction.sender.email : transaction.receiver.email}
                                                 </>
                                             }
                                             secondary={

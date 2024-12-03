@@ -11,17 +11,16 @@ const Dashboard = () => {
     const userData = useAuth();
     const navigate = useNavigate();
 
-
     const { showInfo } = useNotification();
     const [socket, setSocket] = useState(null);
 
     // connect to websocker
     useEffect(() => {
         if (userData) {
-            const userId = userData._id;
+            const userId = userData.userId;
 
             const newSocket = io(process.env.REACT_APP_API_BASE_URL, {
-                query: { userId }
+                auth: { userId }
             });
 
             setSocket(newSocket);
@@ -32,20 +31,16 @@ const Dashboard = () => {
 
             // show new transaction event
             newSocket.on('new-transaction', (transaction) => {
-                console.log('New transaction received');
-
+                console.log('New transaction received', transaction);
                 showInfo("New money transfer received");
+                // add new transaction to list of transactions
+                userData.transactions = [...userData.transactions, transaction];
             });
 
             newSocket.on('disconnect', () => {
                 console.log('Disconnected from WebSocket');
             });
 
-            return () => {
-                if (newSocket) {
-                    newSocket.disconnect();
-                }
-            }
         }
     }, [showInfo, userData]);
 
