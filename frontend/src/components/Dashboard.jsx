@@ -35,6 +35,12 @@ const Dashboard = () => {
                 showInfo("New money transfer received");
                 // add new transaction to list of transactions
                 userData.transactions = [...userData.transactions, transaction];
+                // update user email
+                if (userData.email === transaction.sender.email) {
+                    userData.amount -= transaction.amount;
+                } else if (userData.email === transaction.receiver.email) {
+                    userData.amount += transaction.amount;
+                }
             });
 
             newSocket.on('disconnect', () => {

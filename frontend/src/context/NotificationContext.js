@@ -5,28 +5,28 @@ const NotificationsContext = createContext();
 
 export const NotificationProvider = ({ children }) => {
 
-    const [notification, setNotifocation] = useState({ message: '', type: '' });
+    const [notification, setNotification] = useState({ message: '', type: '' });
 
 
     const showSuccess = (message) => {
-        setNotifocation({ message: message, type: 'success' });
+        setNotification({ message: message, type: 'success' });
     };
 
     const showError = (message) => {
-        setNotifocation({ message: message, type: 'error' });
+        setNotification({ message: message, type: 'error' });
     };
 
     const showInfo = (message) => {
-        setNotifocation({ message: message, type: 'info' });
+        setNotification({ message: message, type: 'info' });
     };
 
-    const clearNotification = (message) => {
-        setNotifocation({ message: '', type: '' });
+    const clearNotification = () => {
+        setNotification({ message: '', type: '' });
     };
 
     return <NotificationsContext.Provider
         value={{ notification, showSuccess, showError, showInfo, clearNotification }}>
-             {children}
+        {children}
     </NotificationsContext.Provider >
 }
 

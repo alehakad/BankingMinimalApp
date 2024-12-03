@@ -25,7 +25,7 @@ const UserProfileCard = ({ user }) => {
     const { showSuccess, showError } = useNotification();
 
     if (!user) {
-        return <p>Loading...</p>;
+        return <div>Loading...</div>;
     }
     const { email, phone, amount, transactions, name, profileImage } = user;
 
@@ -96,7 +96,6 @@ const UserProfileCard = ({ user }) => {
                     onChange={handleImageUpload}
                 />
                 <label htmlFor="profile-image-upload">
-                    {/* Upload Button */}
                     <Button
                         onClick={handleFileInputClick}
                         variant="contained"
@@ -109,10 +108,10 @@ const UserProfileCard = ({ user }) => {
                 </label>
 
                 <Box sx={{ marginLeft: 2 }}>
-                    <Typography variant="h6" component="div" sx={{ fontWeight: 'bold' }}>
+                    <Typography variant="h6" component="span" sx={{ fontWeight: 'bold', display: 'block' }}>
                         {name}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" component="span" color="text.secondary" sx={{ display: 'block' }}>
                         Balance: ${amount.toFixed(2)}
                     </Typography>
                 </Box>
@@ -120,23 +119,27 @@ const UserProfileCard = ({ user }) => {
 
             <CardContent>
                 {/* Contact Details */}
-                <Typography variant="subtitle1" sx={{ fontWeight: 'bold', marginBottom: 1 }}>
+                <Typography variant="subtitle1" component="span" sx={{ fontWeight: 'bold', marginBottom: 1, display: 'block' }}>
                     Contact Info
                 </Typography>
-                <Typography variant="body2" sx={{ marginBottom: 1 }}>
-                    <span role="img" aria-label="email">📧</span> {email}
-                </Typography>
-                <Typography variant="body2" sx={{ marginBottom: 1 }}>
-                    <span role="img" aria-label="phone">📞</span> {phone}
-                </Typography>
+                <Box sx={{ marginBottom: 1 }}>
+                    <Typography variant="body2" component="span">
+                        <span role="img" aria-label="email">📧</span> {email}
+                    </Typography>
+                </Box>
+                <Box sx={{ marginBottom: 1 }}>
+                    <Typography variant="body2" component="span">
+                        <span role="img" aria-label="phone">📞</span> {phone}
+                    </Typography>
+                </Box>
 
                 <Divider sx={{ marginY: 2 }} />
 
                 {/* Transactions */}
-                <Typography variant="subtitle1" sx={{ fontWeight: 'bold', marginBottom: 1 }}>
+                <Typography variant="subtitle1" component="span" sx={{ fontWeight: 'bold', marginBottom: 1, display: 'block' }}>
                     Transactions
                 </Typography>
-                {transactions.length > 0 ?
+                {transactions.length > 0 ? (
                     <List>
                         {transactions.map((transaction, index) => {
                             const isReceiver = transaction.receiver.email === email;
@@ -157,10 +160,10 @@ const UserProfileCard = ({ user }) => {
                                             }
                                             secondary={
                                                 <>
-                                                    <Typography variant="body2" color="text.secondary">
+                                                    <Typography variant="body2" component="span" color="text.secondary" sx={{ display: 'block' }}>
                                                         Amount: ${transaction.amount.toFixed(2)}
                                                     </Typography>
-                                                    <Typography variant="body2" color="text.secondary">
+                                                    <Typography variant="body2" component="span" color="text.secondary" sx={{ display: 'block' }}>
                                                         Date: {transaction.date}
                                                     </Typography>
                                                 </>
@@ -172,10 +175,15 @@ const UserProfileCard = ({ user }) => {
                             );
                         })}
                     </List>
-                    : <Typography variant="body2" color="text.secondary">No transactions yet</Typography>}
+                ) : (
+                    <Typography variant="body2" component="span" color="text.secondary" sx={{ display: 'block' }}>
+                        No transactions yet
+                    </Typography>
+                )}
             </CardContent>
         </Card>
     );
+
 }
 
 export default UserProfileCard;

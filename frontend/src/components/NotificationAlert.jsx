@@ -10,7 +10,7 @@ const NotificationAlert = () => {
             {notification.message && (
                 <Snackbar open={true} autoHideDuration={5000} onClose={clearNotification}>
                     <Alert severity={notification.type} onClose={clearNotification}>
-                        <AlertTitle>{notification.type === 'success' ? 'Success' : 'Error'}</AlertTitle>
+                        <AlertTitle>{notification.type}</AlertTitle>
                         {notification.message}
                     </Alert>
                 </Snackbar>
