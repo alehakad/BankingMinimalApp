@@ -26,6 +26,7 @@ const addTransaction = async (req, res) => {
 
         const { receiver, amount } = req.body.transaction;
 
+        const parsedAmount = parseFloat(amount);
         // can't send money to yourself
         if (userEmail === receiver) return res.status(400).json({ error: 'Cannot send money to yourself' });
         // reciever
@@ -36,7 +37,7 @@ const addTransaction = async (req, res) => {
         // start session
         const session = await mongoose.startSession();
 
-        const transaction = { sender: { _id: senderUser._id, email: senderUser.email }, receiver: { _id: receiverUser._id, email: receiverUser.email }, amount: parseFloat(amount), date: new Date() };
+        const transaction = { sender: { _id: senderUser._id, email: senderUser.email }, receiver: { _id: receiverUser._id, email: receiverUser.email }, amount: parsedAmount, date: new Date() };
         if (senderUser.amount < amount) {
             return res.status(403).json({ error: 'Insufficient balance' });
         }
@@ -47,8 +48,8 @@ const addTransaction = async (req, res) => {
                 senderUser.transactions.push(transaction);
                 receiverUser.transactions.push(transaction);
 
-                senderUser.amount -= amount;
-                receiverUser.amount += amount;
+                senderUser.amount -= parsedAmount;
+                receiverUser.amount += parsedAmount;
 
                 await senderUser.save();
                 await receiverUser.save();

@@ -37,7 +37,7 @@ const TransferPage = () => {
     }
 
 
-    function sendMoney(event) {
+    const sendMoney = (event) => {
         event.preventDefault();
         console.log(receiverEmail, amount);
         api.patch('/me/transactions', {
