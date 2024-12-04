@@ -20,6 +20,7 @@ const userSchema = new Schema({
     amount: { type: Number, default: 0 },
     verified: { type: Boolean, default: false }, // if passcode verified
     profileImage: { type: String }, // url of profile image
+    role: { type: [String], enum: ['admin', 'user'], default: ['user'] }, // array of roles
     transactions: [transactionSchema],
 }, { timestamps: true });
 

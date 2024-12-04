@@ -1,6 +1,7 @@
 import express from 'express';
 import jwtMiddleware from "../middleware/auth.js";
-import { getUsersEmails } from '../services/usersController.js';
+import { getUsersEmails, deleteUser } from '../services/usersController.js';
+import checkRole from '../middleware/roleCheck.js';
 
 const router = express.Router();
 
@@ -19,5 +20,7 @@ router.use((err, req, res, next) => {
 });
 
 router.get('/', getUsersEmails);
+// make avaliable for admin only
+router.delete('/:id', checkRole(['admin']), deleteUser);
 
 export default router;

@@ -26,7 +26,7 @@ const loginUser = async (req, res) => {
         return res.status(403).json({ error: 'Account not verified' });
     };
 
-    const token = generateToken(existingUser.email);
+    const token = generateToken(existingUser.email, existingUser.roles);
     return res.status(200).json({ token });
 };
 
@@ -70,7 +70,7 @@ const verifyOtp = async (req, res) => {
     currentUser.verified = true;
     await currentUser.save();
     // user will be redirected to home
-    const token = generateToken(currentUser.email);
+    const token = generateToken(currentUser.email, currentUser.roles);
 
     res.status(200).json({ message: 'Account verified', token });
 
